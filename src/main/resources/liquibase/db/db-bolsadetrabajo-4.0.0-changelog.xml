@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-4.0.0-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Person already exists">
+            <not>
+                <tableExists tableName="PERSON" />
+            </not>
+        </preConditions>
+        <createTable tableName="person">
+            <column autoIncrement="true" name="id" type="BIGINT(20)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="oficial_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="identification" type="VARCHAR(255)"/>
+            <column name="phone_number" type="VARCHAR(255)"/>
+            <column name="deleted" type="BOOLEAN"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="person" constraintName="FK_PERSON_ON_USERID" referencedColumnNames="user_id" referencedTableName="user"/>
+    </changeSet>
+</databaseChangeLog>

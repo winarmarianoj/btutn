@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "email.api.key",
+      "type": "java.lang.String",
+      "description": "Description for email.api.key."
+    },
+    {
+      "name": "spring.datasource.database-platform",
+      "type": "org.hibernate.dialect.MySQL5Dialect",
+      "description": "Description for spring.datasource.database-platform."
+    },
+    {
+      "name": "springfox.documentation.swagger.v2.path",
+      "type": "java.lang.String",
+      "description": "Description for springfox.documentation.swagger.v2.path."
+    }
+  ] }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-3.0.0-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table User already exists">
+            <not>
+                <tableExists tableName="USER" />
+            </not>
+        </preConditions>
+        <createTable tableName="user">
+            <column name="user_id" type="BIGINT(20)"  autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="verification_code" type="VARCHAR(255)"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="role_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user" constraintName="FK_USER_ON_ROLEID" referencedColumnNames="role_id" referencedTableName="role"/>
+
+    </changeSet>
+
+</databaseChangeLog>

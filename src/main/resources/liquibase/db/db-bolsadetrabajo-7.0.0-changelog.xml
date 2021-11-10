@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-7.0.0-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Category already exists">
+            <not>
+                <tableExists tableName="CATEGORY" />
+            </not>
+        </preConditions>
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="BIGINT(20)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="create_day" type="DATE"/>
+            <column name="modified_day" type="DATE"/>
+            <column name="deleted_day" type="DATE"/>
+            <column name="deleted" type="BOOLEAN"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

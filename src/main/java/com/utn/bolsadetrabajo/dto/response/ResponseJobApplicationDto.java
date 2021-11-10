@@ -1,0 +1,39 @@
+package com.utn.bolsadetrabajo.dto.response;
+
+import com.utn.bolsadetrabajo.model.enums.State;
+import com.utn.bolsadetrabajo.model.enums.TypeModality;
+import com.utn.bolsadetrabajo.model.enums.TypePosition;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ResponseJobApplicationDto {
+    private Long id;
+    private LocalDate applied;
+    private LocalDate deletedDay;
+    private boolean jobAppdeleted;
+    private String name;
+    private String surname;
+    private String dni;
+    private String email;
+    private String phoneNumber;
+    private String title;
+    private String description;
+    private String area;
+    private String body;
+    private String experience;
+    private TypeModality modality;
+    private TypePosition position;
+    private LocalDate datePublished;
+    private LocalDate modifiedDay;
+    private LocalDate jobOfferDeletedDay;
+    private boolean jobOfferDeleted;
+    private State state;
+}

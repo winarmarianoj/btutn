@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-2.1.1-changelog" author="marianowinar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Parameters already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM PARAMETERS WHERE permit = 'sizePage'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="PARAMETERS">
+            <column name="description" value="Cantidad de Elementos por Pàgina en Pageable"/>
+            <column name="value" value="10"/>
+            <column name="permit" value="sizePage"/>
+        </insert>
+        <comment>Add Size Page in Pageable</comment>
+    </changeSet>
+
+    <changeSet id="db-bolsadetrabajo-2.1.2-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Parameters already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM PARAMETERS WHERE permit = 'minAgeApplicant'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="PARAMETERS">
+            <column name="description" value="Edad mìnima aceptada para Postulantes"/>
+            <column name="value" value="18"/>
+            <column name="permit" value="minAgeApplicant"/>
+        </insert>
+        <comment>Add Minimum Age to Applicant</comment>
+    </changeSet>
+
+</databaseChangeLog>

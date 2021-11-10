@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <include file="liquibase/db/db-bolsadetrabajo-1.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-1.1.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-2.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-2.1.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-3.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-4.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-5.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-6.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-7.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-8.0.0-changelog.xml" />
+    <include file="liquibase/db/db-bolsadetrabajo-9.0.0-changelog.xml" />
+</databaseChangeLog>

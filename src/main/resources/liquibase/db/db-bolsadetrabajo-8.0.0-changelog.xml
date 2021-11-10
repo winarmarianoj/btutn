@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-8.0.0-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table JobOffer already exists">
+            <not>
+                <tableExists tableName="JOBOFFER" />
+            </not>
+        </preConditions>
+        <createTable tableName="joboffer">
+            <column autoIncrement="true" name="id" type="BIGINT(20)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_joboffer"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="area" type="VARCHAR(255)"/>
+            <column name="body" type="VARCHAR(255)"/>
+            <column name="experience" type="VARCHAR(255)"/>
+            <column name="modality" type="VARCHAR(255)"/>
+            <column name="position" type="VARCHAR(255)"/>
+            <column name="create_day" type="DATE"/>
+            <column name="modified_day" type="DATE"/>
+            <column name="deleted_day" type="DATE"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="deleted" type="BOOLEAN"/>
+            <column name="publisher_id" type="BIGINT"/>
+            <column name="category_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="joboffer" constraintName="FK_JOBOFFER_ON_CATEGORYID" referencedColumnNames="id" referencedTableName="category"/>
+        <addForeignKeyConstraint baseColumnNames="publisher_id" baseTableName="joboffer" constraintName="FK_JOBOFFER_ON_PUBLISHERID" referencedColumnNames="id" referencedTableName="publisher"/>
+
+    </changeSet>
+</databaseChangeLog>

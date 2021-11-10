@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-1.1.1-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Role already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM ROLE WHERE role = 'ADMIN'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="ROLE">
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <comment>Add Role Admin</comment>
+    </changeSet>
+
+    <changeSet id="db-bolsadetrabajo-1.1.2-changelog" author="mariano">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Role already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM ROLE WHERE role = 'APPLICANT'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="ROLE">
+            <column name="role" value="APPLICANT"/>
+        </insert>
+        <comment>Add Role Applicant</comment>
+    </changeSet>
+
+    <changeSet id="db-bolsadetrabajo-1.1.3-changelog" author="mariano">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Role already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM ROLE WHERE role = 'PUBLISHER'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="ROLE">
+            <column name="role" value="PUBLISHER"/>
+        </insert>
+        <comment>Add Role Publisher</comment>
+    </changeSet>
+
+    <changeSet id="db-bolsadetrabajo-1.1.4-changelog" author="mariano">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Role already exists">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM ROLE WHERE role = 'UTN'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="ROLE">
+            <column name="role" value="UTN"/>
+        </insert>
+        <comment>Add Role UTN</comment>
+    </changeSet>
+
+</databaseChangeLog>

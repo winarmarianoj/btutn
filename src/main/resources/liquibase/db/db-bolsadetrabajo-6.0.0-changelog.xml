@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="db-bolsadetrabajo-6.0.0-changelog" author="marianowiñar">
+        <preConditions onFail="MARK_RAN" onFailMessage="Table Publisher already exists">
+            <not>
+                <tableExists tableName="PUBLISHER" />
+            </not>
+        </preConditions>
+        <createTable tableName="publisher">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_publisher"/>
+            </column>
+            <column name="web_page" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="publisher" constraintName="FK_PUBLISHER_ON_ID" referencedColumnNames="id" referencedTableName="person"/>
+
+    </changeSet>
+</databaseChangeLog>
