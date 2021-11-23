@@ -40,12 +40,11 @@ public class Validator extends AbstractValidator {
     }
 
     public boolean validJobOffer(JobOffer jobOffer) throws JobOfferException {
-        /*Map<String, String> list = getResponseText(jobOffer);
+        Map<String, String> list = getResponseText(jobOffer);
         ResponseValidatorDto dto = getResultValidate(list);
         if(!dto.isResult()){throw new JobOfferException(dto.getResponse());}
 
-        return dto.isResult();*/
-        return true;
+        return dto.isResult();
     }
 
     private ResponseValidatorDto getResultValidate(Map<String, String> list) {
@@ -63,12 +62,12 @@ public class Validator extends AbstractValidator {
 
     private Map<String, String> getResponseText(JobOffer jobOffer) {
         Map<String, String> list = new HashMap<>();
-        list.put(jobOffer.getTitle(), jobOffer.getTitle() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getTitle()) ? "Esta todo OK!" : "El Nombre o Nombre Oficial es incorrecto o invalido");
-        list.put(jobOffer.getDescription(), jobOffer.getDescription() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getDescription()) ? "Esta todo OK!" : "El Apellido o Nombre Representativo es incorrecto o invalido");
-        list.put(jobOffer.getArea(), jobOffer.getArea() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getArea()) ? "Esta todo OK!" : "El Area es incorrecto o invalido");
-        list.put(jobOffer.getBody(), jobOffer.getBody() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getBody()) ? "Esta todo OK!" : "El Cuerpo es incorrecto o invalido");
-        list.put(jobOffer.getExperience(), jobOffer.getExperience() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getExperience()) ? "Esta todo OK!" : "La Experiencia es incorrecto o invalido");
-        list.put(jobOffer.getCategory().getName(), jobOffer.getCategory().getName() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getCategory().getName()) ? "Esta todo OK!" : "La Categoria es incorrecto o invalido");
+        list.put(jobOffer.getTitle(), jobOffer.getTitle() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getTitle()) ? "1" : "El Nombre o Nombre Oficial es incorrecto o invalido");
+        list.put(jobOffer.getDescription(), jobOffer.getDescription() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getDescription()) ? "1" : "El Apellido o Nombre Representativo es incorrecto o invalido");
+        list.put(jobOffer.getArea(), jobOffer.getArea() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getArea()) ? "1" : "El Area es incorrecto o invalido");
+        list.put(jobOffer.getBody(), jobOffer.getBody() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getBody()) ? "1" : "El Cuerpo es incorrecto o invalido");
+        list.put(jobOffer.getExperience(), jobOffer.getExperience() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getExperience()) ? "1" : "La Experiencia es incorrecto o invalido");
+        list.put(jobOffer.getCategory().getName(), jobOffer.getCategory().getName() != null || !Pattern.matches(REGEX_TEXT, jobOffer.getCategory().getName()) ? "1" : "La Categoria es incorrecto o invalido");
 
         return list;
     }
