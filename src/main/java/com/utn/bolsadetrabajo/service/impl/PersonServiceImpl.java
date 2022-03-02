@@ -4,6 +4,7 @@ import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
 import com.utn.bolsadetrabajo.model.Person;
+import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.PersonRepository;
@@ -114,6 +115,12 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person getPersonByUsername(String username) {
         User user = userService.findByUsername(username);
+        return repository.findByUser(user);
+    }
+
+    @Override
+    public Person findByIdUser_Id(Long id) {
+        User user = userService.findByIdUser(id);
         return repository.findByUser(user);
     }
 

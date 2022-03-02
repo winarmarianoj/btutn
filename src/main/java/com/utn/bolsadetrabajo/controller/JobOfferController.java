@@ -95,6 +95,11 @@ public class JobOfferController implements Controllers<JobOfferDTO> {
         return service.getAll(page);
     }
 
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllWithoutPage() {
+        return service.getAllWithoutPage();
+    }
+
     @ApiOperation(value = "joboffer.getAll - Devuelve la lista de los JobOffer segun el state solicitado.", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
@@ -102,7 +107,7 @@ public class JobOfferController implements Controllers<JobOfferDTO> {
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
-    @GetMapping("/{filter}")
+    @GetMapping("/filter/{filter}")
     public ResponseEntity<?> getAllByFilter(@RequestParam(name = "page",defaultValue = "0") int page, @RequestParam State state){
         return service.getAllWithFilter(page, state);
     }

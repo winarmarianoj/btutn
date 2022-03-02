@@ -6,6 +6,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponsePublisherList;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
 import com.utn.bolsadetrabajo.mapper.PublisherMapper;
+import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
@@ -152,10 +153,17 @@ public class PublisherServiceImpl implements PublisherService {
         repository.save(publisher);
     }
 
+    @Override
+    public ResponseEntity<?> getByIdUser(Long id) {
+        Person person = personService.findByIdUser_Id(id);
+        Publisher dto = repository.findById(person.getId()).get();
+        return sendGetPublisherByRequest(dto, String.valueOf(id));
+    }
+
     private ResponseEntity<?> sendGetPublisherByRequest(Publisher publisher, String request) {
         try{
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    personMapper.toResponsePerson(publisher,
+                    publisherMapper.toResponsePublisher(publisher,
                             messageSource.getMessage("publisher.response.object.success", null,null))
             );
         }catch (Exception e){

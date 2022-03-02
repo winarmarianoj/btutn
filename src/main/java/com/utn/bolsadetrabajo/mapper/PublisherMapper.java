@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.request.PublisherDTO;
+import com.utn.bolsadetrabajo.dto.response.ResponsePublisherDto;
 import com.utn.bolsadetrabajo.dto.response.ResponsePublisherList;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.Publisher;
@@ -10,6 +11,7 @@ import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.repository.RoleRepository;
 import com.utn.bolsadetrabajo.service.UserService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,4 +57,21 @@ public class PublisherMapper {
         return list;
     }
 
+    public ResponsePublisherDto toResponsePublisher(Publisher publisher, String message) {
+        ResponsePublisherDto dto = ResponsePublisherDto.builder()
+                .id(publisher.getId())
+                .oficialName(publisher.getOficialName())
+                .lastName(publisher.getLastName())
+                .cuit(publisher.getIdentification())
+                .phoneNumber(publisher.getPhoneNumber())
+                .email(publisher.getUser().getUsername())
+                .webPage(publisher.getWebPage())
+                .message(message)
+                .uri(ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/user/{id}")
+                        .buildAndExpand(publisher.getUser().getUserId()).toUri())
+                .build();
+        return dto;
+    }
 }

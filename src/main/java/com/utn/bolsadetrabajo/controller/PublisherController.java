@@ -102,4 +102,9 @@ public class PublisherController implements Controllers<PublisherDTO> {
         return service.getAllPublishers(page);
     }
 
+    @GetMapping(path = "/userId/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getByIdUser(@PathVariable Long id){
+        return service.getByIdUser(id);
+    }
+
 }

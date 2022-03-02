@@ -29,4 +29,6 @@ public interface JobOfferService {
     ResponseEntity<?> getAllJobOfferSimplePublisher(int page, Category filter);
 
     ResponseEntity<?> getAll(int page);
+
+    ResponseEntity<?> getAllWithoutPage();
 }
