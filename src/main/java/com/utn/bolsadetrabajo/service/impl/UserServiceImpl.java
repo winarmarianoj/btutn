@@ -72,6 +72,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByIdUser(Long id) {
+        return repository.findById(id).get();
+    }
+
+    @Override
     public ResponseEntity<?> getAllUsers(int numberPage) {
         int pageSizeParameters = Integer.parseInt(parametersRepository.getSizePage("sizePage"));
         Pageable pageable = PageRequest.of(numberPage, pageSizeParameters);

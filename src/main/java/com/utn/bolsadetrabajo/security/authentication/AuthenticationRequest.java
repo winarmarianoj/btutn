@@ -1,6 +1,5 @@
 package com.utn.bolsadetrabajo.security.authentication;
 
-
 import java.io.Serializable;
 
 public class AuthenticationRequest implements Serializable {

@@ -11,6 +11,8 @@ public interface UserService {
 
     ResponseEntity<?> findById(Long id);
 
+    User findByIdUser(Long id);
+
     ResponseEntity<?> getAllUsers(int page);
 
     ResponseEntity<?> activateAccount(String username, String hash);

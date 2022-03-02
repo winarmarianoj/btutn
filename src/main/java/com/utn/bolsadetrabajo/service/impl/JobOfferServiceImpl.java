@@ -248,6 +248,18 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
     }
 
+    @Override
+    public ResponseEntity<?> getAllWithoutPage() {
+        try {
+            List<JobOffer> jobOffers = repository.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toJobOfferListSimplePublisher(jobOffers));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(messageSource.getMessage("joboffer.all.joboffer.failed",
+                            null, null));
+        }
+    }
+
     private JobApplication saveJobApplication (Applicant applicant, JobOffer jobOffer){
         JobApplication job = mapper.toModelJobApplication(applicant, jobOffer);
         for (JobApplication ele : applicant.getJobApplications()) {

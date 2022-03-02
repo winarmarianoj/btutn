@@ -19,4 +19,6 @@ public interface PublisherService {
     ResponseEntity<?> getAllPublishers(int page);
 
     void addJobOffer(Publisher publisher);
+
+    ResponseEntity<?> getByIdUser(Long id);
 }
