@@ -3,6 +3,8 @@ package com.utn.bolsadetrabajo.service.impl;
 import com.utn.bolsadetrabajo.controller.UserController;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.UserMapper;
+import com.utn.bolsadetrabajo.model.Person;
+import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.Role;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
@@ -125,5 +127,12 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         return repository.findByUsername(username);
     }
+
+    @Override
+    public User update(Person pub, String email, String password) {
+        User newUser = userMapper.update(pub.getUser(), email, bCryptPasswordEncoder.encode(password));
+        return repository.save(newUser);
+    }
+
 
 }

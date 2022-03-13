@@ -26,13 +26,23 @@ public class PersonMapper {
         User user = userService.saveUser(dto.getEmail(), dto.getPassword(), role);
         if(per == null) per = new Person();
 
+        buildPerson(per, dto);
+        per.setUser(user);
+        return per;
+    }
+
+    public Person toUpdate(Person per, PersonDTO dto) {
+        buildPerson(per, dto);
+        per.setUser(userService.update(per, dto.getEmail(), dto.getPassword()));
+        return per;
+    }
+
+    private void buildPerson(Person per, PersonDTO dto){
         per.setOficialName(dto.getName());
         per.setLastName(dto.getSurname());
         per.setIdentification(dto.getDni());
         per.setPhoneNumber(dto.getPhoneNumber());
         per.setDeleted(false);
-        per.setUser(user);
-        return per;
     }
 
     public ResponsePersonDto toResponsePerson(Person person, String message) {
@@ -46,7 +56,7 @@ public class PersonMapper {
                 .message(message)
                 .uri(ServletUriComponentsBuilder
                         .fromCurrentContextPath()
-                        .path("/user/{id}")
+                        .path("/person/{id}")
                         .buildAndExpand(person.getUser().getUserId()).toUri())
                 .build();
         return per;

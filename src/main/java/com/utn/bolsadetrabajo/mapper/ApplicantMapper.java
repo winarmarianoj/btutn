@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.request.ApplicantDTO;
+import com.utn.bolsadetrabajo.dto.response.ResponseApplicantDto;
 import com.utn.bolsadetrabajo.dto.response.ResponseApplicantList;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.*;
@@ -12,6 +13,7 @@ import com.utn.bolsadetrabajo.repository.RoleRepository;
 import com.utn.bolsadetrabajo.service.UserService;
 import com.utn.bolsadetrabajo.validation.AgeValidate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,18 @@ public class ApplicantMapper {
         User user = userService.saveUser(dto.getEmail(), dto.getPassword(), role);
         if(app == null) app = new Applicant();
 
+        buildPerson(app, dto);
+        app.setUser(user);
+        return app;
+    }
+
+    public Applicant toUpdate(Applicant app, ApplicantDTO dto) {
+        buildPerson(app, dto);
+        app.setUser(userService.update(app, dto.getEmail(), dto.getPassword()));
+        return app;
+    }
+
+    private void buildPerson(Applicant app, ApplicantDTO dto) {
         app.setOficialName(dto.getName());
         app.setLastName(dto.getSurname());
         app.setIdentification(dto.getDni());
@@ -47,8 +61,6 @@ public class ApplicantMapper {
         app.setGenre(Genre.valueOf(dto.getGenre()));
         app.setTypeStudent(TypeStudent.valueOf(dto.getTypeStudent()));
         app.setDeleted(false);
-        app.setUser(user);
-        return app;
     }
 
     public List<ResponseApplicantList> toApplicantList(List<Applicant> applicants) {
@@ -67,5 +79,26 @@ public class ApplicantMapper {
         }
         return list;
     }
+
+    public ResponseApplicantDto toResponseApplicant(Applicant app, String message) {
+        ResponseApplicantDto dto = ResponseApplicantDto.builder()
+                .id(app.getId())
+                .name(app.getOficialName())
+                .surname(app.getLastName())
+                .dni(app.getIdentification())
+                .phoneNumber(app.getPhoneNumber())
+                .email(app.getUser().getUsername())
+                .genre(app.getGenre())
+                .birthDate(app.getBirthDate())
+                .typeStudent(app.getTypeStudent())
+                .message(message)
+                .uri(ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/applicant/{id}")
+                        .buildAndExpand(app.getUser().getUserId()).toUri())
+                .build();
+        return dto;
+    }
+
 
 }

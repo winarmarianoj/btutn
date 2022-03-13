@@ -63,6 +63,11 @@ public class ApplicantController implements Controllers<ApplicantDTO> {
         return service.update(id, applicantDTO);
     }
 
+    @PutMapping(value = "/{id}/{applicantDTO}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> updates(@PathVariable Long id, @PathVariable ApplicantDTO applicantDTO){
+        return service.update(id, applicantDTO);
+    }
+
     @ApiOperation(value = "${applicant.delete} - Elimina un Applicant", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
@@ -98,6 +103,16 @@ public class ApplicantController implements Controllers<ApplicantDTO> {
     @GetMapping("/")
     public ResponseEntity<?> getAll(@RequestParam(name = "page",defaultValue = "0") int page){
         return service.getAllApplicants(page);
+    }
+
+    /**
+     * Devuelve un Publisher a traves del id del User
+     * @param id del user
+     * @return objeto publisher para mostrar en profile
+     */
+    @GetMapping(path = "/userId/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getByIdUser(@PathVariable Long id){
+        return service.getByIdUser(id);
     }
 
 }

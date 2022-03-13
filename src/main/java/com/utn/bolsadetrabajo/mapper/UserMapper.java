@@ -47,4 +47,10 @@ public class UserMapper {
         auth.setRole(user.getRole());
         return auth;
     }
+
+    public User update(User user, String email, String encodePassword) {
+        user.setUsername(email);
+        user.setPassword(encodePassword);
+        return user;
+    }
 }
