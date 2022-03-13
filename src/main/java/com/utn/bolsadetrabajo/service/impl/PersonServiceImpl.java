@@ -67,7 +67,7 @@ public class PersonServiceImpl implements PersonService {
     public ResponseEntity<?> update(Long id, PersonDTO personDTO) {
         try{
             Person person = repository.findById(id).get();
-            Person newPer = mapper.toModel(person, personDTO);
+            Person newPer = mapper.toUpdate(person, personDTO);
             validator.validPerson(newPer);
             Person aux = repository.save(newPer);
             return ResponseEntity.status(HttpStatus.OK).body(

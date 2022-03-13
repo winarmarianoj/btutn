@@ -102,6 +102,11 @@ public class PublisherController implements Controllers<PublisherDTO> {
         return service.getAllPublishers(page);
     }
 
+    /**
+     * Devuelve un Publisher a traves del id del User
+     * @param id del user
+     * @return objeto publisher para mostrar en profile
+     */
     @GetMapping(path = "/userId/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getByIdUser(@PathVariable Long id){
         return service.getByIdUser(id);

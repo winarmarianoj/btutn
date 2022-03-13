@@ -7,11 +7,14 @@ import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.ApplicantMapper;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
 import com.utn.bolsadetrabajo.model.Applicant;
+import com.utn.bolsadetrabajo.model.Person;
+import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.service.ApplicantService;
 import com.utn.bolsadetrabajo.service.EmailService;
+import com.utn.bolsadetrabajo.service.PersonService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -42,11 +45,12 @@ public class ApplicantServiceImpl implements ApplicantService {
     private PersonMapper personMapper;
     private MessageSource messageSource;
     private Validator validator;
+    private PersonService personService;
 
     private List<Link> links;
 
     @Autowired
-    public ApplicantServiceImpl(ApplicantRepository repository, ParametersRepository parametersRepository, ApplicantMapper applicantMapper, MessageSource messageSource, PersonMapper personMapper, EmailService emailService, Validator validator) {
+    public ApplicantServiceImpl(ApplicantRepository repository, ParametersRepository parametersRepository, ApplicantMapper applicantMapper, MessageSource messageSource, PersonMapper personMapper, EmailService emailService, Validator validator, PersonService personService) {
         this.repository = repository;
         this.parametersRepository = parametersRepository;
         this.applicantMapper = applicantMapper;
@@ -54,6 +58,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         this.personMapper = personMapper;
         this.emailService = emailService;
         this.validator = validator;
+        this.personService = personService;
     }
 
     @Override
@@ -88,7 +93,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     public ResponseEntity<?> update(Long id, ApplicantDTO applicantDTO) {
         try{
             Applicant app = repository.findById(id).get();
-            Applicant newApplicant = applicantMapper.toModel(app, applicantDTO);
+            Applicant newApplicant = applicantMapper.toUpdate(app, applicantDTO);
             validator.validPerson(newApplicant);
             Applicant aux = repository.save(newApplicant);
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -152,10 +157,17 @@ public class ApplicantServiceImpl implements ApplicantService {
         repository.save(applicant);
     }
 
+    @Override
+    public ResponseEntity<?> getByIdUser(Long id) {
+        Person person = personService.findByIdUser_Id(id);
+        Applicant dto = repository.findById(person.getId()).get();
+        return sendGetApplicantByRequest(dto, String.valueOf(id));
+    }
+
     private ResponseEntity<?> sendGetApplicantByRequest(Applicant app, String request) {
         try{
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    personMapper.toResponsePerson(app,
+                    applicantMapper.toResponseApplicant(app,
                             messageSource.getMessage("applicant.response.object.success", null,null))
             );
         }catch (Exception e){

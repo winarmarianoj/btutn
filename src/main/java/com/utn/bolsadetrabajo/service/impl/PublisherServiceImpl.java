@@ -92,7 +92,7 @@ public class PublisherServiceImpl implements PublisherService {
     public ResponseEntity<?> update(Long id, PublisherDTO publisherDTO) {
         try {
             Publisher pub = repository.findById(id).get();
-            Publisher newPublisher = publisherMapper.toModel(pub, publisherDTO);
+            Publisher newPublisher = publisherMapper.toUpdate(pub, publisherDTO);
             validator.validPerson(newPublisher);
             Publisher aux = repository.save(newPublisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(

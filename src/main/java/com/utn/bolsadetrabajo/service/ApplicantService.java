@@ -19,4 +19,6 @@ public interface ApplicantService {
     ResponseEntity<?> getAllApplicants(int page);
 
     void postulateJobOffer(Applicant applicant);
+
+    ResponseEntity<?> getByIdUser(Long id);
 }
