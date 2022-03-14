@@ -1,8 +1,8 @@
 package com.utn.bolsadetrabajo.mapper;
 
-import com.utn.bolsadetrabajo.dto.request.ApplicantDTO;
-import com.utn.bolsadetrabajo.dto.response.ResponseApplicantDto;
+import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseApplicantList;
+import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Genre;
@@ -33,7 +33,7 @@ public class ApplicantMapper {
         this.parametersRepository = parametersRepository;
     }
 
-    public Applicant toModel(Applicant app, ApplicantDTO dto) throws PersonException {
+    public Applicant toModel(Applicant app, PersonDTO dto) throws PersonException {
         int age = parametersRepository.findByValue("minAgeApplicant");
         if(!ageValidate.ageValidateApplicant(dto, age)) return null;
 
@@ -46,13 +46,13 @@ public class ApplicantMapper {
         return app;
     }
 
-    public Applicant toUpdate(Applicant app, ApplicantDTO dto) {
+    public Applicant toUpdate(Applicant app, PersonDTO dto) {
         buildPerson(app, dto);
         app.setUser(userService.update(app, dto.getEmail(), dto.getPassword()));
         return app;
     }
 
-    private void buildPerson(Applicant app, ApplicantDTO dto) {
+    private void buildPerson(Applicant app, PersonDTO dto) {
         app.setOficialName(dto.getName());
         app.setLastName(dto.getSurname());
         app.setIdentification(dto.getDni());
@@ -80,12 +80,12 @@ public class ApplicantMapper {
         return list;
     }
 
-    public ResponseApplicantDto toResponseApplicant(Applicant app, String message) {
-        ResponseApplicantDto dto = ResponseApplicantDto.builder()
+    public ResponsePersonDto toResponseApplicant(Applicant app, String message) {
+        ResponsePersonDto dto = ResponsePersonDto.builder()
                 .id(app.getId())
                 .name(app.getOficialName())
                 .surname(app.getLastName())
-                .dni(app.getIdentification())
+                .identification(app.getIdentification())
                 .phoneNumber(app.getPhoneNumber())
                 .email(app.getUser().getUsername())
                 .genre(app.getGenre())

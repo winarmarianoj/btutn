@@ -1,24 +1,21 @@
 package com.utn.bolsadetrabajo.service;
 
-import com.utn.bolsadetrabajo.dto.request.PublisherDTO;
-import com.utn.bolsadetrabajo.exception.PersonException;
+import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.model.Publisher;
+import com.utn.bolsadetrabajo.model.User;
+import com.utn.bolsadetrabajo.service.common.GenericService;
 import org.springframework.http.ResponseEntity;
 
-public interface PublisherService {
-    ResponseEntity<?> save(PublisherDTO publisher) throws PersonException;
+import java.util.List;
 
-    ResponseEntity<?> getPublisherById(Long id);
+public interface PublisherService extends GenericService<PersonDTO> {
 
-    ResponseEntity<?> getPublisherByCuit(String cuit);
-
-    ResponseEntity<?> update(Long id, PublisherDTO publisherDTO);
-
-    ResponseEntity<?> delete(Long id);
-
-    ResponseEntity<?> getAllPublishers(int page);
+    ResponseEntity<?> getByIdUserPub(User user);
 
     void addJobOffer(Publisher publisher);
 
-    ResponseEntity<?> getByIdUser(Long id);
+    ResponseEntity<?> sendGetPublisherByRequest(Publisher publisher, Long id);
+
+    List<Publisher> getAll();
+
 }

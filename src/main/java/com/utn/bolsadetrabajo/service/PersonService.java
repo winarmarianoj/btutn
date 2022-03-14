@@ -3,22 +3,31 @@ package com.utn.bolsadetrabajo.service;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.Person;
-import com.utn.bolsadetrabajo.model.Publisher;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface PersonService {
+    String SIZE_PAGE = "sizePage";
+    String PREV = "prev";
+    String NEXT = "next";
+    List<Link> links = new ArrayList<>();
 
-    ResponseEntity<?> getById(Long id);
+    ResponseEntity<?> sendGetPersonByRequest(Person person, Long id);
 
-    ResponseEntity<?> getByDni(String dni);
+    ResponseEntity<?> update(Person person, PersonDTO personDTO);
 
-    ResponseEntity<?> update(Long id, PersonDTO personDTO);
-
-    ResponseEntity<?> delete(Long id);
+    ResponseEntity<?> delete(Person person);
 
     ResponseEntity<?> save(PersonDTO personDTO) throws PersonException;
 
+    ResponseEntity<?> getAll(int numberPage);
+
     Person getPersonByUsername(String username);
 
-    Person findByIdUser_Id(Long id);
+    ResponseEntity<?> getAllApplicant(int page);
+
+    ResponseEntity<?> getAllPublisher(int page);
 }

@@ -4,11 +4,13 @@ import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.service.PersonService;
+import com.utn.bolsadetrabajo.service.common.GenericService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +22,9 @@ import javax.validation.Valid;
 @RequestMapping("/person")
 public class PersonController implements Controllers<PersonDTO> {
 
-    private PersonService service;
-
-    @Autowired
-    public PersonController(PersonService service) {
-        this.service = service;
-    }
+    @Qualifier("genericServiceImpl")
+    @Autowired GenericService service;
+    @Autowired PersonService personService;
 
     @ApiOperation(value = "${person.getById} - Devuelve los datos de una persona por su ID", response = ResponseEntity.class)
     @ApiResponses(value = {
@@ -46,9 +45,19 @@ public class PersonController implements Controllers<PersonDTO> {
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
-    @GetMapping("/dni/{dni}")
-    public ResponseEntity<?> getByDni(@PathVariable String dni){
-        return service.getByDni(dni);
+    @GetMapping("/identification/{identification}")
+    public ResponseEntity<?> getByDni(@PathVariable String identification){
+        return service.getByIdentification(identification);
+    }
+
+    /**
+     * Devuelve un Publisher a traves del id del User
+     * @param id del user
+     * @return objeto publisher para mostrar en profile
+     */
+    @GetMapping(path = "/userId/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getByIdUser(@PathVariable Long id){
+        return service.getByIdUser(id);
     }
 
     @ApiOperation(value = "${person.update} - Modifica los datos de una persona", response = ResponseEntity.class)
@@ -96,8 +105,32 @@ public class PersonController implements Controllers<PersonDTO> {
     })
     @Override
     @GetMapping("/")
-    public ResponseEntity<?> getAll(int page) {
-        return null;
+    public ResponseEntity<?> getAll(@RequestParam(name = "page",defaultValue = "0") int page) {
+        return personService.getAll(page);
+    }
+
+    @ApiOperation(value = "person.getAll - Devuelve La Lista de Todas las Personas", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @GetMapping("/applicants")
+    public ResponseEntity<?> getAllApplicant(@RequestParam(name = "page",defaultValue = "0") int page) {
+        return personService.getAllApplicant(page);
+    }
+
+    @ApiOperation(value = "person.getAll - Devuelve La Lista de Todas las Personas", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @GetMapping("/publishers")
+    public ResponseEntity<?> getAllPublisher(@RequestParam(name = "page",defaultValue = "0") int page) {
+        return personService.getAllPublisher(page);
     }
 
 }

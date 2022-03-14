@@ -7,24 +7,26 @@ import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.repository.RoleRepository;
 import com.utn.bolsadetrabajo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class PersonMapper {
 
-    private final RoleRepository roleRepository;
-    private final UserService userService;
+    @Autowired RoleRepository roleRepository;
+    @Autowired UserService userService;
+    @Autowired ApplicantMapper applicantMapper;
+    @Autowired PublisherMapper publisherMapper;
+    private List<ResponsePersonDto> list;
 
-    public PersonMapper(RoleRepository roleRepository, UserService userService) {
-        this.roleRepository = roleRepository;
-        this.userService = userService;
-    }
-
-    public Person toModel(Person per, PersonDTO dto) throws PersonException {
+    public Person toModel(PersonDTO dto) throws PersonException {
         Role role = roleRepository.getByRole(Roles.UTN);
         User user = userService.saveUser(dto.getEmail(), dto.getPassword(), role);
-        if(per == null) per = new Person();
+        Person per = new Person();
 
         buildPerson(per, dto);
         per.setUser(user);
@@ -50,7 +52,7 @@ public class PersonMapper {
                 .id(person.getId())
                 .name(person.getOficialName())
                 .surname(person.getLastName())
-                .dni(person.getIdentification())
+                .identification(person.getIdentification())
                 .phoneNumber(person.getPhoneNumber())
                 .email(person.getUser().getUsername())
                 .message(message)
@@ -62,4 +64,27 @@ public class PersonMapper {
         return per;
     }
 
+    public List<ResponsePersonDto> toPersonList(List<Person> personList) {
+        this.list = new ArrayList<>();
+        for(Person person : personList){
+            list.add(toResponsePerson(person, ""));
+        }
+        return list;
+    }
+
+    public List<ResponsePersonDto> toApplicantList(List<Applicant> applicants) {
+        this.list = new ArrayList<>();
+        for(Applicant applicant : applicants){
+            list.add(applicantMapper.toResponseApplicant(applicant, ""));
+        }
+        return list;
+    }
+
+    public List<ResponsePersonDto> toPublisherList(List<Publisher> publishers) {
+        this.list = new ArrayList<>();
+        for(Publisher publisher : publishers){
+            list.add(publisherMapper.toResponsePublisher(publisher, ""));
+        }
+        return list;
+    }
 }

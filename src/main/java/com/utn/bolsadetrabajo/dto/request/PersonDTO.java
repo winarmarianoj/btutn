@@ -1,11 +1,15 @@
 package com.utn.bolsadetrabajo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.utn.bolsadetrabajo.model.enums.Roles;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -24,7 +28,7 @@ public class PersonDTO {
     private String surname;
 
     @NotNull(message = "El campo DNI es obligatorio")
-    @Size(min = 7, max = 15, message = "DNI debe tener un tamaño entre 7 a 15 caracteres.")
+    @Size(min = 7, max = 12, message = "DNI debe tener un tamaño entre 7 a 15 caracteres.")
     private String dni;
 
     @NotNull(message = "Email no puede estar vacìo")
@@ -42,4 +46,21 @@ public class PersonDTO {
     @NotNull(message = "Telèfono no puede estar vacìo")
     @Size(min = 8, max = 20, message = "Invalid phone number")
     private String phoneNumber;
+
+    @NotNull(message = "Su Rol no puede estar vacìo")
+    private Roles role;
+
+    //@NotNull(message = "Gènero no puede estar vacìo")
+    private String genre;
+
+    //@NotNull(message = "Fecha de Cumpleaños no puede estar vacìo")
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private LocalDate birthDate;
+
+    //@NotNull(message = "Tipo de Estudiante no puede estar vacìo")
+    private String typeStudent;
+
+    //@NotNull(message = "URL no puede estar vacìo.")
+    @URL()
+    private String webPage;
 }
