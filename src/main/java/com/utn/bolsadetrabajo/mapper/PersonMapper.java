@@ -6,7 +6,7 @@ import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.repository.RoleRepository;
-import com.utn.bolsadetrabajo.service.UserService;
+import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -42,7 +42,7 @@ public class PersonMapper {
     private void buildPerson(Person per, PersonDTO dto){
         per.setOficialName(dto.getName());
         per.setLastName(dto.getSurname());
-        per.setIdentification(dto.getDni());
+        per.setIdentification(dto.getIdentification());
         per.setPhoneNumber(dto.getPhoneNumber());
         per.setDeleted(false);
     }
@@ -55,6 +55,7 @@ public class PersonMapper {
                 .identification(person.getIdentification())
                 .phoneNumber(person.getPhoneNumber())
                 .email(person.getUser().getUsername())
+                .role(person.getUser().getRole().getRole().toString())
                 .message(message)
                 .uri(ServletUriComponentsBuilder
                         .fromCurrentContextPath()

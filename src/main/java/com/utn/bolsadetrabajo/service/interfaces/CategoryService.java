@@ -1,7 +1,8 @@
-package com.utn.bolsadetrabajo.service;
+package com.utn.bolsadetrabajo.service.interfaces;
 
 import com.utn.bolsadetrabajo.dto.request.CategoryDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface CategoryService {
     ResponseEntity<?> getById(Long id);
@@ -12,7 +13,7 @@ public interface CategoryService {
 
     ResponseEntity<?> save(CategoryDTO categoryDTO);
 
-    ResponseEntity<?> getAllCategories(int page);
+    ResponseEntity<?> getAllCategories();
 
     ResponseEntity<?> getFiltersAllCategories();
 }

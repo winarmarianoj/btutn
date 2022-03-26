@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService implements com.utn.bolsadetrabajo.service.AuthenticationService {
+public class AuthenticationService implements com.utn.bolsadetrabajo.service.interfaces.AuthenticationService {
 
     private AuthenticationManager authenticationManager;
     private JwtUtilService jwtTokenUtil;

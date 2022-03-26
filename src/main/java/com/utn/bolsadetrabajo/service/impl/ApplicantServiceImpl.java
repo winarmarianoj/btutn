@@ -4,11 +4,12 @@ import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.ApplicantMapper;
 import com.utn.bolsadetrabajo.model.Applicant;
+import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
-import com.utn.bolsadetrabajo.service.ApplicantService;
-import com.utn.bolsadetrabajo.service.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
+import com.utn.bolsadetrabajo.service.interfaces.EmailService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,24 +29,19 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Autowired Validator validator;
 
     @Override
-    public ResponseEntity<?> getById(Long id) {
-        Applicant app = repository.findById(id).get();
-        return sendGetApplicantByRequest(app, id);
+    public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id){
+        try{
+            Applicant applicant = getApplicant(person.getId());
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.response.object.success", null,null)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.search.failed", new Object[] {id}, null));
+        }
     }
-
-    @Override
-    public ResponseEntity<?> getByIdentification(String dni) {
-        Applicant app = repository.findByIdentification(dni);
-        return sendGetApplicantByRequest(app, Long.valueOf(dni));
-    }
-
-    @Override
-    public ResponseEntity<?> getByIdUser(Long id) {return null;}
 
     @Override
     public ResponseEntity<?> update(Long id, PersonDTO applicantDTO) {
         try{
-            Applicant app = repository.findById(id).get();
+            Applicant app = getApplicant(id);
             Applicant newApplicant = applicantMapper.toUpdate(app, applicantDTO);
             validator.validPerson(newApplicant);
             Applicant aux = repository.save(newApplicant);
@@ -58,7 +54,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
-            Applicant applicant = repository.findById(id).get();
+            Applicant applicant = getApplicant(id);
             applicant.setDeleted(true);
             applicant.getUser().setState(State.DELETED);
             repository.save(applicant);
@@ -69,9 +65,9 @@ public class ApplicantServiceImpl implements ApplicantService {
     }
 
     @Override
-    public ResponseEntity<?> save(PersonDTO dto) throws PersonException {
+    public ResponseEntity<?> save(PersonDTO applicantDTO) throws PersonException {
         try{
-            Applicant app = applicantMapper.toModel(null, dto);
+            Applicant app = applicantMapper.toModel(null, applicantDTO);
             validator.validPerson(app);
             Applicant applicant = repository.save(app);
             emailService.createEmailPerson(applicant);
@@ -84,7 +80,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public ResponseEntity<?> getByIdUserApp(User user) {
         Applicant applicant = repository.findByUser(user);
-        return sendGetApplicantByRequest(applicant, applicant.getId());
+        return sendGetPersonByRequest(applicant, applicant.getId());
     }
 
     @Override
@@ -93,17 +89,17 @@ public class ApplicantServiceImpl implements ApplicantService {
     }
 
     @Override
-    public ResponseEntity<?> sendGetApplicantByRequest(Applicant applicant, Long id) {
-        try{
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.response.object.success", null,null)));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.search.failed", new Object[] {id}, null));
-        }
+    public List<Applicant> getAll() {
+        return repository.findAll();
     }
 
     @Override
-    public List<Applicant> getAll() {
-        return repository.findAll();
+    public Applicant getApplicantByUser(User user) {
+        return repository.findByUser(user);
+    }
+
+    private Applicant getApplicant(Long id) {
+        return repository.findById(id).get();
     }
 
 }

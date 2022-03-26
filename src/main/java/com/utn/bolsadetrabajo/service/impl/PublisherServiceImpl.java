@@ -4,13 +4,14 @@ import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
 import com.utn.bolsadetrabajo.mapper.PublisherMapper;
+import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.PublisherRepository;
-import com.utn.bolsadetrabajo.service.*;
-import com.utn.bolsadetrabajo.util.UserConnectedService;
+import com.utn.bolsadetrabajo.service.interfaces.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -24,33 +25,28 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Autowired PublisherRepository repository;
     @Autowired ParametersRepository parametersRepository;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailService emailService;
     @Autowired PublisherMapper publisherMapper;
     @Autowired PersonMapper personMapper;
     @Autowired MessageSource messageSource;
-    @Autowired UserConnectedService userConnectedService;
     @Autowired Validator validator;
 
     @Override
-    public ResponseEntity<?> getById(Long id) {
-        Publisher pub = repository.findById(id).get();
-        return sendGetPublisherByRequest(pub, id);
+    public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
+        try{
+            Publisher publisher = repository.findById(person.getId()).get();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {id}, null));
+        }
     }
 
     @Override
-    public ResponseEntity<?> getByIdentification(String cuit) {
-        Publisher pub = repository.findByIdentification(cuit);
-        return sendGetPublisherByRequest(pub, Long.valueOf(cuit));
-    }
-
-    @Override
-    public ResponseEntity<?> getByIdUser(Long id) {return null;}
-
-    @Override
-    public ResponseEntity<?> update(Long id, PersonDTO publisherDTO) {
+    public ResponseEntity<?> update(Long id, PersonDTO personDTO) {
         try {
-            Publisher pub = repository.findById(id).get();
-            Publisher newPublisher = publisherMapper.toUpdate(pub, publisherDTO);
+            Publisher pub = getPublisher(id);
+            Publisher newPublisher = publisherMapper.toUpdate(pub, personDTO);
             validator.validPerson(newPublisher);
             Publisher aux = repository.save(newPublisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(aux, messageSource.getMessage("publisher.update.success", null,null)));
@@ -62,7 +58,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
-            Publisher publisher = repository.findById(id).get();
+            Publisher publisher = getPublisher(id);
             publisher.setDeleted(true);
             publisher.getUser().setState(State.DELETED);
             repository.save(publisher);
@@ -73,9 +69,9 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public ResponseEntity<?> save(PersonDTO dto) throws PersonException{
+    public ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
         try{
-            Publisher newPublisher = publisherMapper.toModel(null, dto);
+            Publisher newPublisher = publisherMapper.toModel(null, personDTO);
             validator.validPerson(newPublisher);
             Publisher publisher = repository.save(newPublisher);
             emailService.createEmailPerson(publisher);
@@ -88,7 +84,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public ResponseEntity<?> getByIdUserPub(User user) {
         Publisher publisher = repository.findByUser(user);
-        return sendGetPublisherByRequest(publisher, publisher.getId());
+        return sendGetPersonByRequest(publisher, publisher.getId());
     }
 
     @Override
@@ -97,18 +93,16 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public ResponseEntity<?> sendGetPublisherByRequest(Publisher publisher, Long id) {
-        try{
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {id}, null));
-        }
-    }
-
-    @Override
     public List<Publisher> getAll() {
         return repository.findAll();
     }
 
+    @Override
+    public Publisher getPublisherByUser(User user) {
+        return repository.findByUser(user);
+    }
 
+    private Publisher getPublisher(Long id) {
+        return repository.findById(id).get();
+    }
 }

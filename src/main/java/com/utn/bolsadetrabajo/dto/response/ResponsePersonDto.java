@@ -22,6 +22,7 @@ public class ResponsePersonDto {
     private String identification;
     private String phoneNumber;
     private String email;
+    private String role;
     private Genre genre;
     private LocalDate birthDate;
     private TypeStudent typeStudent;

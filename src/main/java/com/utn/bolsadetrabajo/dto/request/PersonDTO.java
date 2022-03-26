@@ -29,7 +29,7 @@ public class PersonDTO {
 
     @NotNull(message = "El campo DNI es obligatorio")
     @Size(min = 7, max = 12, message = "DNI debe tener un tamaño entre 7 a 15 caracteres.")
-    private String dni;
+    private String identification;
 
     @NotNull(message = "Email no puede estar vacìo")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
@@ -47,7 +47,7 @@ public class PersonDTO {
     @Size(min = 8, max = 20, message = "Invalid phone number")
     private String phoneNumber;
 
-    @NotNull(message = "Su Rol no puede estar vacìo")
+    //@NotNull(message = "Su Rol no puede estar vacìo")
     private Roles role;
 
     //@NotNull(message = "Gènero no puede estar vacìo")

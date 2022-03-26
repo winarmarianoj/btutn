@@ -1,8 +1,9 @@
 package com.utn.bolsadetrabajo.controller;
 
+import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
-import com.utn.bolsadetrabajo.service.AuthenticationService;
-import com.utn.bolsadetrabajo.service.UserService;
+import com.utn.bolsadetrabajo.service.interfaces.AuthenticationService;
+import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -11,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.utn.bolsadetrabajo.controller.interfaces.Controllers.*;
-
 @RestController
 @Api(value = "Authentication Controller", description = "Controlador de Autentificaciones.")
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController implements Messages {
 
     private AuthenticationService authenticationService;
     private UserService userService;

@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
-import com.utn.bolsadetrabajo.service.UserService;
+import com.utn.bolsadetrabajo.controller.interfaces.Messages;
+import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -9,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.utn.bolsadetrabajo.controller.interfaces.Controllers.*;
-
 @RestController
 @Api(value = "User Controller", description = "Controlador de User.")
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements Messages {
 
     private UserService service;
 

@@ -1,7 +1,8 @@
-package com.utn.bolsadetrabajo.util.reports;
+package com.utn.bolsadetrabajo.service.reports.impl;
 
 import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
+import com.utn.bolsadetrabajo.service.reports.ApplicantReport;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -10,27 +11,28 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@Component()
-public class ApplicantReport {
+@Service
+public class ApplicantReportImpl implements ApplicantReport {
 
-    private ApplicantRepository applicantRepository;
+    @Autowired private ApplicantRepository applicantRepository;
 
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
 
     @Autowired
-    public ApplicantReport(ApplicantRepository applicantRepository) {
+    public ApplicantReportImpl(ApplicantRepository applicantRepository) {
         this.workbook = new XSSFWorkbook();
         this.applicantRepository = applicantRepository;
     }
 
+    @Override
     public void export(HttpServletResponse response) throws IOException {
         writeHeaderLine();
 
@@ -54,6 +56,7 @@ public class ApplicantReport {
         }
         cell.setCellStyle(style);
     }
+
     private void writeHeaderLine() {
         sheet = workbook.createSheet("Applicant");
 

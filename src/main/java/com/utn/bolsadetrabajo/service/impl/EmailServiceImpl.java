@@ -7,7 +7,7 @@ import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
-import com.utn.bolsadetrabajo.service.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

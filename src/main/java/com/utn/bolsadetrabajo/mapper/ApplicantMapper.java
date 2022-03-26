@@ -1,7 +1,6 @@
 package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
-import com.utn.bolsadetrabajo.dto.response.ResponseApplicantList;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.*;
@@ -10,13 +9,10 @@ import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.model.enums.TypeStudent;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.RoleRepository;
-import com.utn.bolsadetrabajo.service.UserService;
+import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import com.utn.bolsadetrabajo.validation.AgeValidate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ApplicantMapper {
@@ -55,29 +51,12 @@ public class ApplicantMapper {
     private void buildPerson(Applicant app, PersonDTO dto) {
         app.setOficialName(dto.getName());
         app.setLastName(dto.getSurname());
-        app.setIdentification(dto.getDni());
+        app.setIdentification(dto.getIdentification());
         app.setPhoneNumber(dto.getPhoneNumber());
         app.setBirthDate(dto.getBirthDate());
         app.setGenre(Genre.valueOf(dto.getGenre()));
         app.setTypeStudent(TypeStudent.valueOf(dto.getTypeStudent()));
         app.setDeleted(false);
-    }
-
-    public List<ResponseApplicantList> toApplicantList(List<Applicant> applicants) {
-        ResponseApplicantList res = new ResponseApplicantList();
-        List<ResponseApplicantList> list = new ArrayList<>();
-        for(Applicant app : applicants){
-            res.setName(app.getOficialName());
-            res.setSurname(app.getLastName());
-            res.setDni(app.getIdentification());
-            res.setPhoneNumber(app.getPhoneNumber());
-            res.setEmail(app.getUser().getUsername());
-            res.setGenre(String.valueOf(app.getGenre()));
-            res.setBirthDate(app.getBirthDate());
-            res.setTypeStudent(String.valueOf(app.getTypeStudent()));
-            list.add(res);
-        }
-        return list;
     }
 
     public ResponsePersonDto toResponseApplicant(Applicant app, String message) {
@@ -88,17 +67,17 @@ public class ApplicantMapper {
                 .identification(app.getIdentification())
                 .phoneNumber(app.getPhoneNumber())
                 .email(app.getUser().getUsername())
+                .role(app.getUser().getRole().getRole().toString())
                 .genre(app.getGenre())
                 .birthDate(app.getBirthDate())
                 .typeStudent(app.getTypeStudent())
                 .message(message)
                 .uri(ServletUriComponentsBuilder
                         .fromCurrentContextPath()
-                        .path("/applicant/{id}")
+                        .path("/person/{id}")
                         .buildAndExpand(app.getUser().getUserId()).toUri())
                 .build();
         return dto;
     }
-
 
 }

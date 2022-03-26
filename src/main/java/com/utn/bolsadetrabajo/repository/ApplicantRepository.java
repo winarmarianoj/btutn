@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
-    Applicant findByIdentification(String dni);
-
     Applicant findByUser(User user);
 }

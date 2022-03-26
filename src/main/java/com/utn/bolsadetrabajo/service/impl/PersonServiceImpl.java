@@ -1,6 +1,5 @@
 package com.utn.bolsadetrabajo.service.impl;
 
-import com.utn.bolsadetrabajo.controller.PersonController;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
@@ -10,28 +9,19 @@ import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
-import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.PersonRepository;
-import com.utn.bolsadetrabajo.service.*;
+import com.utn.bolsadetrabajo.service.interfaces.*;
+import com.utn.bolsadetrabajo.service.reports.GenerateListTypePerson;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -39,14 +29,18 @@ public class PersonServiceImpl implements PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     @Autowired PersonRepository repository;
-    @Autowired ParametersRepository parametersRepository;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailService emailService;
     @Autowired PersonMapper mapper;
     @Autowired MessageSource messageSource;
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
     @Autowired Validator validator;
-    @Autowired PublisherService publisherService;
-    @Autowired ApplicantService applicantService;
+    @Autowired GenerateListTypePerson generateListTypePerson;
+    @Autowired
+    PublisherService publisherService;
+    @Autowired
+    ApplicantService applicantService;
 
     @Override
     public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
@@ -59,8 +53,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseEntity<?> update(Person person, PersonDTO personDTO) {
+    public ResponseEntity<?> update(Long id, PersonDTO personDTO) {
         try{
+            Person person = getPerson(id);
             Person newPer = mapper.toUpdate(person, personDTO);
             validator.validPerson(newPer);
             Person aux = repository.save(newPer);
@@ -71,14 +66,15 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseEntity<?> delete(Person person) {
+    public ResponseEntity<?> delete(Long id) {
         try{
+            Person person = getPerson(id);
             person.setDeleted(true);
             person.getUser().setState(State.DELETED);
             repository.save(person);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.deleted.failed", new Object[] {person.getId()}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.deleted.failed", new Object[] {id}, null));
         }
     }
 
@@ -96,24 +92,21 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseEntity<?> getAll(int numberPage) {
+    public ResponseEntity<?> getAll() {
         List<Person> personList = repository.findAll();
-        List<ResponsePersonDto> lists = mapper.toPersonList(personList);
-        return allPersonList(lists, numberPage);
+        return allPersonList(mapper.toPersonList(personList));
     }
 
     @Override
     public ResponseEntity<?> getAllApplicant(int numberPage) {
         List<Applicant> applicants = applicantService.getAll();
-        List<ResponsePersonDto> lists = mapper.toApplicantList(applicants);
-        return allPersonList(lists, numberPage);
+        return allPersonList(mapper.toApplicantList(applicants));
     }
 
     @Override
     public ResponseEntity<?> getAllPublisher(int numberPage) {
         List<Publisher> publishers = publisherService.getAll();
-        List<ResponsePersonDto> lists = mapper.toPublisherList(publishers);
-        return allPersonList(lists, numberPage);
+        return allPersonList(mapper.toPublisherList(publishers));
     }
 
     @Override
@@ -122,24 +115,17 @@ public class PersonServiceImpl implements PersonService {
         return repository.findByUser(user);
     }
 
-    private ResponseEntity<?> allPersonList(List<ResponsePersonDto> lists, int numberPage) {
-        int pageSizeParameters = Integer.parseInt(parametersRepository.getSizePage(SIZE_PAGE));
-        Pageable pageable = PageRequest.of(numberPage, pageSizeParameters);
-        Page<ResponsePersonDto> page = new PageImpl<>(lists, pageable, lists.size());
+    private ResponseEntity<?> allPersonList(List<ResponsePersonDto> lists) {
         try{
-            if(page.getContent().isEmpty()){ throw new ResponseStatusException(HttpStatus.NO_CONTENT); }
-            links.add(linkTo(methodOn(PersonController.class).getAll(numberPage)).withSelfRel());
-
-            if(page.hasPrevious()){
-                links.add(linkTo(methodOn(PersonController.class).getAll(numberPage - 1)).withRel(PREV));
-            }
-            if(page.hasNext()){
-                links.add(linkTo(methodOn(PersonController.class).getAll(numberPage + 1)).withRel(NEXT));
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(CollectionModel.of(page, links));
+            return ResponseEntity.status(HttpStatus.OK).body(lists);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.all.failed",null, null));
         }
+    }
+
+    private Person getPerson(Long id) {
+        Person person = repository.findById(id).get();
+        return person;
     }
 
 }

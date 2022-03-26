@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PublisherRepository extends JpaRepository<Publisher, Long> {
-    Publisher findByIdentification(String cuit);
-
     Publisher findByUser(User user);
 }

@@ -1,34 +1,24 @@
 package com.utn.bolsadetrabajo.service.impl;
 
-import com.utn.bolsadetrabajo.controller.CategoryController;
 import com.utn.bolsadetrabajo.dto.request.CategoryDTO;
-import com.utn.bolsadetrabajo.dto.response.ResponseCategoryDto;
 import com.utn.bolsadetrabajo.dto.response.ResponseSearchCategoryDto;
 import com.utn.bolsadetrabajo.exception.CategoryException;
 import com.utn.bolsadetrabajo.mapper.CategoryMapper;
 import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.repository.CategoryRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
-import com.utn.bolsadetrabajo.service.CategoryService;
+import com.utn.bolsadetrabajo.service.interfaces.CategoryService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -113,28 +103,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<?> getAllCategories(int numberPage) {
-        int pageSizeParameters = Integer.parseInt(parametersRepository.getSizePage("sizePage"));
-        Pageable pageable = PageRequest.of(numberPage, pageSizeParameters);
-
-        List<Category> categories = categoryRepository.findAll();
-        List<ResponseCategoryDto> lists = categoryMapper.toCategoriesList(categories);
-        Page<ResponseCategoryDto> page = new PageImpl<>(lists, pageable, lists.size());
-
-        links = new ArrayList<>();
+    public ResponseEntity<?> getAllCategories() {
         try{
-            if(page.getContent().isEmpty()){ throw new ResponseStatusException(HttpStatus.NO_CONTENT); }
-            links.add(linkTo(methodOn(CategoryController.class).getAll(numberPage)).withSelfRel());
-
-            if(page.hasPrevious()){
-                links.add(linkTo(methodOn(CategoryController.class)
-                        .getAll(numberPage - 1)).withRel("prev"));
-            }
-            if(page.hasNext()){
-                links.add(linkTo(methodOn(CategoryController.class)
-                        .getAll(numberPage + 1)).withRel("next"));
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(CollectionModel.of(page, links));
+            List<Category> categories = categoryRepository.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toCategoriesList(categories));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(messageSource.getMessage("category.lists.failed",
