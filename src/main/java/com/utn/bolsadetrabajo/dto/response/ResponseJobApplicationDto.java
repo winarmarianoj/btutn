@@ -15,15 +15,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class ResponseJobApplicationDto {
-    private Long id;
+    private Long jobOfferID;
     private LocalDate applied;
     private LocalDate deletedDay;
     private boolean jobAppdeleted;
+    private Long applicantID;
     private String name;
     private String surname;
     private String dni;
     private String email;
     private String phoneNumber;
+    private String typeStudent;
     private String title;
     private String description;
     private String area;
