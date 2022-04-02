@@ -11,9 +11,9 @@ import java.util.List;
 public class JobApplicationMapper {
 
     public List<ResponseJobApplicationDto> toResponseJobApplication(List<JobApplication> jobApplications) {
-        ResponseJobApplicationDto res = new ResponseJobApplicationDto();
         List<ResponseJobApplicationDto> list = new ArrayList<>();
         for(JobApplication job : jobApplications){
+            ResponseJobApplicationDto res = new ResponseJobApplicationDto();
             res.setJobOfferID(job.getId());
             res.setApplied(job.getApplied());
             res.setDeletedDay(job.getDeletedDay());
@@ -32,6 +32,8 @@ public class JobApplicationMapper {
             res.setExperience(job.getJobOffer().getExperience());
             res.setModality((job.getJobOffer().getModality()));
             res.setPosition(job.getJobOffer().getPosition());
+            res.setCategory(job.getJobOffer().getCategory().getName());
+            res.setCategoryDescription(job.getJobOffer().getCategory().getDescription());
             res.setDatePublished(job.getJobOffer().getCreateDay());
             res.setModifiedDay(job.getJobOffer().getModifiedDay());
             res.setJobOfferDeletedDay(job.getJobOffer().getDeletedDay());

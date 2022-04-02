@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import com.utn.bolsadetrabajo.exception.JobOfferException;
 import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
 import com.utn.bolsadetrabajo.model.*;
@@ -109,11 +110,10 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public ResponseEntity<?> postulate(Long id) {
+    public ResponseEntity<?> postulate(PostulateDTO postulateDTO) {
         try {
-            String username = userConnectedService.userConected();
-            Applicant applicant = (Applicant) personService.getPersonByUsername(username);
-            JobOffer jobOffer = getJobOffer(id);
+            Applicant applicant = managerService.getPersonTypeApplicantByIdUser(postulateDTO.getApplicantID());
+            JobOffer jobOffer = getJobOffer(postulateDTO.getJobofferID());
             JobApplication jobApplication = saveJobApplication(applicant, jobOffer);
             applicant.getJobApplications().add(jobApplication);
             jobOffer.getJobApplications().add(jobApplication);
@@ -122,7 +122,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             emailService.createEmailPostulate(jobOffer, applicant);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.postulate.success", null, null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{postulateDTO.getJobofferID()}, null));
         }
     }
 

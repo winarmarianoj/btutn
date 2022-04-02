@@ -3,6 +3,7 @@ package com.utn.bolsadetrabajo.controller;
 import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import com.utn.bolsadetrabajo.service.interfaces.JobOfferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,9 +89,9 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
-    @GetMapping(value = "/postulate/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> postulate(@PathVariable Long id){
-        return jobOfferService.postulate(id);
+    @PostMapping(value = "/postulate", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> postulate(@RequestBody @Valid PostulateDTO postulateDTO){
+        return jobOfferService.postulate(postulateDTO);
     }
 
 

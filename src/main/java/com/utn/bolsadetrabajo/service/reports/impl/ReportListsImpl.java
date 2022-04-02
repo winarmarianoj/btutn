@@ -5,6 +5,7 @@ import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.mapper.JobApplicationMapper;
 import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
+import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.model.JobApplication;
 import com.utn.bolsadetrabajo.model.JobOffer;
@@ -77,7 +78,8 @@ public class ReportListsImpl implements ReportLists {
     @Override
     public ResponseEntity<?> getJobApplicantAllByApplicant(Long id) {
         try {
-            return getResponseEntity(managerService.getPersonTypeApplicantByIdUser(id).getJobApplications());
+            Applicant applicant = managerService.getPersonTypeApplicantByIdUser(id);
+            return getResponseEntity(applicant.getJobApplications());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed", null, null));
         }

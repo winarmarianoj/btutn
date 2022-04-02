@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.service.interfaces;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface JobOfferService {
@@ -13,6 +14,6 @@ public interface JobOfferService {
 
     ResponseEntity<?> getAll();
 
-    ResponseEntity<?> postulate(Long id);
+    ResponseEntity<?> postulate(PostulateDTO postulateDTO);
 
 }

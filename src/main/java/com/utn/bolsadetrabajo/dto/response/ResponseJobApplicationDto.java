@@ -1,5 +1,6 @@
 package com.utn.bolsadetrabajo.dto.response;
 
+import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.model.enums.TypeModality;
 import com.utn.bolsadetrabajo.model.enums.TypePosition;
@@ -33,6 +34,8 @@ public class ResponseJobApplicationDto {
     private String experience;
     private TypeModality modality;
     private TypePosition position;
+    private String category;
+    private String categoryDescription;
     private LocalDate datePublished;
     private LocalDate modifiedDay;
     private LocalDate jobOfferDeletedDay;
