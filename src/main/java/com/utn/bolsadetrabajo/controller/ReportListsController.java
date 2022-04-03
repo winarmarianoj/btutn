@@ -32,7 +32,7 @@ public class ReportListsController {
         return reportLists.getJobOfferAllWithFilter(state);
     }
 
-    @ApiOperation(value = "report-lists.getJobApplicantAllByApplicant - Lo usa el applicante para ver su lista de postulaciones." +
+    @ApiOperation(value = "report-lists.getJobApplicantAllByApplicant - Applicant: Ver su lista de postulaciones." +
             "El ID que se recibe es el del Applicant quien consulta.", response = ResponseEntity.class)
     @GetMapping(value = "/jobapplicants/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getJobApplicantAllByApplicant(@PathVariable Long id){
