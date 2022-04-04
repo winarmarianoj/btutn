@@ -122,7 +122,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             emailService.createEmailPostulate(jobOffer, applicant);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.postulate.success", null, null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{postulateDTO.getJobofferID()}, null));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{postulateDTO.getJobofferID()}, null));
         }
     }
 

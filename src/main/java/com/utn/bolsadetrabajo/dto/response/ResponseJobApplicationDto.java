@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class ResponseJobApplicationDto {
-    private Long jobOfferID;
+    private Long jobOfferApplicantID;
     private LocalDate applied;
     private LocalDate deletedDay;
     private boolean jobAppdeleted;
@@ -27,6 +27,7 @@ public class ResponseJobApplicationDto {
     private String email;
     private String phoneNumber;
     private String typeStudent;
+    private Long jobOfferID;
     private String title;
     private String description;
     private String area;

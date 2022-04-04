@@ -14,7 +14,7 @@ public class JobApplicationMapper {
         List<ResponseJobApplicationDto> list = new ArrayList<>();
         for(JobApplication job : jobApplications){
             ResponseJobApplicationDto res = new ResponseJobApplicationDto();
-            res.setJobOfferID(job.getId());
+            res.setJobOfferApplicantID(job.getId());
             res.setApplied(job.getApplied());
             res.setDeletedDay(job.getDeletedDay());
             res.setJobAppdeleted(job.isDeleted());
@@ -25,6 +25,7 @@ public class JobApplicationMapper {
             res.setEmail(job.getApplicant().getUser().getUsername());
             res.setPhoneNumber(job.getApplicant().getPhoneNumber());
             res.setTypeStudent(String.valueOf(job.getApplicant().getTypeStudent()));
+            res.setJobOfferID(job.getJobOffer().getId());
             res.setTitle(job.getJobOffer().getTitle());
             res.setDescription(job.getJobOffer().getDescription());
             res.setArea(job.getJobOffer().getArea());
