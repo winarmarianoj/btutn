@@ -12,7 +12,7 @@ public interface ReportLists {
 
     ResponseEntity<?> getAllWithPage(int numberPage);
 
-    ResponseEntity<?> getJobOfferAllWithFilter(State state);
+    ResponseEntity<?> getJobOfferAllWithFilter(String state);
 
     ResponseEntity<?> getJobApplicantAllByApplicant(Long id);
 

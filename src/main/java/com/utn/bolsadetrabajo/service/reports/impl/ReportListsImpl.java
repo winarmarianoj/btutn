@@ -66,9 +66,9 @@ public class ReportListsImpl implements ReportLists {
     }
 
     @Override
-    public ResponseEntity<?> getJobOfferAllWithFilter(State state) {
+    public ResponseEntity<?> getJobOfferAllWithFilter(String state) {
         try {
-            List<JobOffer> jobOffers = jobOfferRepository.findAllByState(String.valueOf(state));
+            List<JobOffer> jobOffers = jobOfferRepository.findAllByState(state);
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferListSimplePublisher(jobOffers));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.all.joboffer.failed",null, null));

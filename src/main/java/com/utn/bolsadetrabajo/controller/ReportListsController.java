@@ -26,47 +26,44 @@ public class ReportListsController {
         return reportLists.getAllWithPage(page);
     }
 
-    @ApiOperation(value = "report-lists.getJobOfferAllWithFilter - UTN: Devuelve la lista de los JobOffer segun el state solicitado.", response = ResponseEntity.class)
-    @GetMapping("/filter/{filter}")
-    public ResponseEntity<?> getJobOfferAllWithFilter(@RequestParam State state){
-        return reportLists.getJobOfferAllWithFilter(state);
-    }
-
-    @ApiOperation(value = "report-lists.getJobApplicantAllByApplicant - Applicant: Ver su lista de postulaciones." +
-            "El ID que se recibe es el del Applicant quien consulta.", response = ResponseEntity.class)
+    @ApiOperation(value = "report-lists.getJobApplicantAllByApplicant - Applicant: Ver su lista de postulaciones. El ID que se recibe es el del Applicant quien consulta.", response = ResponseEntity.class)
     @GetMapping(value = "/jobapplicants/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getJobApplicantAllByApplicant(@PathVariable Long id){
         return reportLists.getJobApplicantAllByApplicant(id);
     }
 
-    @ApiOperation(value = "report-lists.getJobApplicantAllByJobOfferSimplePublisher - Lo usa el publicador para ver quien se aplico en cada aviso." +
-            "El Id es el del aviso a consultar", response = ResponseEntity.class)
+    @ApiOperation(value = "report-lists.getJobApplicantAllByJobOfferSimplePublisher - Publisher: Ver quien se aplico en cada aviso. El Id es el del aviso a consultar", response = ResponseEntity.class)
     @GetMapping(value = "/jobapplicants-by-my-offers/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getJobApplicantAllByJobOfferSimplePublisher(@PathVariable Long id){
         return reportLists.getJobApplicantAllByJobOfferSimplePublisher(id);
     }
 
-    @ApiOperation(value = "report-lists.getEvaluationAllJobOffers -UTN: Evaluacion de " +
-            "cada aviso antes de ser publicado.", response = ResponseEntity.class)
-    @PostMapping("/evaluation")
-    public ResponseEntity<?> getJobOfferAllEvaluation(@RequestBody @Valid JobOfferEvaluationDTO jobOfferEvaluationDTO){
-        return reportLists.getJobOfferAllEvaluation(jobOfferEvaluationDTO);
-    }
-
-    @ApiOperation(value = "report-lists.getAllJobOfferByPublisher - " +
-            "Publicador quiere ver todos sus avisos. El ID del publicador", response = ResponseEntity.class)
+    @ApiOperation(value = "report-lists.getAllJobOfferByPublisher - Publisher: quiere ver todos sus avisos. El ID del publicador", response = ResponseEntity.class)
     @GetMapping(path = "/publisher/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getJobOfferAllByPublisher(@PathVariable Long id) {
         return reportLists.getJobOfferAllByPublisher(id);
     }
 
-    //Todo a revisar.....
-    @ApiOperation(value = "report-lists.getAllJobOfferSimplePublisherByFilter - " +
-            "Publicador quiere ver sus avisos por algun filtro de Categoria. El ID del publicador", response = ResponseEntity.class)
-
+    //Todo a revisar.....ya resuelto en el front
+    @ApiOperation(value = "report-lists.getAllJobOfferSimplePublisherByFilter - Publicador quiere ver sus avisos por algun filtro de Categoria. El ID del publicador", response = ResponseEntity.class)
     @GetMapping(path = "/publisher/filter/{filter}/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getJobOfferAllSimplePublisher(@RequestParam Category filter, @PathVariable Long id) {
         return reportLists.getJobOfferAllSimplePublisher(filter, id);
     }
+
+    @ApiOperation(value = "report-lists.getJobOfferAllWithFilter - UTN: Devuelve la lista de los JobOffer segun el state solicitado.", response = ResponseEntity.class)
+    @GetMapping(path = "/filter/{state}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getJobOfferAllWithFilter(@PathVariable String state){
+        return reportLists.getJobOfferAllWithFilter(state);
+    }
+
+    @ApiOperation(value = "report-lists.getEvaluationAllJobOffers -UTN: Es la respuesta de UTN" +
+            "Evaluacion de sobre cada aviso antes de ser publicado.", response = ResponseEntity.class)
+    @PostMapping("/evaluation")
+    public ResponseEntity<?> getJobOfferAllEvaluation(@RequestBody @Valid JobOfferEvaluationDTO jobOfferEvaluationDTO){
+        return reportLists.getJobOfferAllEvaluation(jobOfferEvaluationDTO);
+    }
+
+
 
 }
