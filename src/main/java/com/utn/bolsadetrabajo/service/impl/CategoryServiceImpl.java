@@ -106,6 +106,9 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<?> getAllCategories() {
         try{
             List<Category> categories = categoryRepository.findAll();
+            for (Category ele : categories) {
+                System.out.println(ele.getName());
+            }
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toCategoriesList(categories));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

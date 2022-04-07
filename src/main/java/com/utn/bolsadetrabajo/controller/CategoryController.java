@@ -68,7 +68,7 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
     }
 
     @Override
-    @ApiOperation(value = "${applicant.create} - Crea una categoria nueva", response = ResponseEntity.class)
+    @ApiOperation(value = "${category.create} - Crea una categoria nueva", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 201, message = CREATED_RESPONSE),
@@ -82,7 +82,7 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
     }
 
     @Override
-    @ApiOperation(value = "${applicant.getAll} - Devuelve la lista de todas las categorias", response = ResponseEntity.class)
+    @ApiOperation(value = "${category.getAll} - Devuelve la lista de todas las categorias", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
@@ -94,7 +94,7 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
         return categoryService.getAllCategories();
     }
 
-    @ApiOperation(value = "${applicant.getFiltersAllCategories} - Devuelve la lista de todas las categorias para mostrar en la lupa frontend", response = ResponseEntity.class)
+    @ApiOperation(value = "${category.getFiltersAllCategories} - Devuelve la lista de todas las categorias para mostrar en la lupa frontend", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
