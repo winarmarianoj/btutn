@@ -3,6 +3,7 @@ package com.utn.bolsadetrabajo.controller;
 import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import com.utn.bolsadetrabajo.service.interfaces.JobOfferService;
 import io.swagger.annotations.Api;
@@ -92,6 +93,13 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     @PostMapping(value = "/postulate", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> postulate(@RequestBody @Valid PostulateDTO postulateDTO){
         return jobOfferService.postulate(postulateDTO);
+    }
+
+    @ApiOperation(value = "report-lists.getEvaluationAllJobOffers -UTN: Es la respuesta de UTN" +
+            "Evaluacion de sobre cada aviso antes de ser publicado.", response = ResponseEntity.class)
+    @PostMapping("/evaluation")
+    public ResponseEntity<?> getJobOfferAllEvaluation(@RequestBody @Valid JobOfferEvaluationDTO jobOfferEvaluationDTO){
+        return jobOfferService.getJobOfferAllEvaluation(jobOfferEvaluationDTO);
     }
 
 

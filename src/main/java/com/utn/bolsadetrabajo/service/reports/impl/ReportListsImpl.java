@@ -1,7 +1,6 @@
 package com.utn.bolsadetrabajo.service.reports.impl;
 
 import com.utn.bolsadetrabajo.controller.ReportListsController;
-import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.mapper.JobApplicationMapper;
 import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
@@ -9,7 +8,6 @@ import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.model.JobApplication;
 import com.utn.bolsadetrabajo.model.JobOffer;
-import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.service.manager.ManagerService;
@@ -91,18 +89,6 @@ public class ReportListsImpl implements ReportLists {
             return getResponseEntity(jobOfferRepository.findById(id).get().getJobApplications());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed",null, null));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> getJobOfferAllEvaluation(JobOfferEvaluationDTO jobOfferEvaluationDTO) {
-        try {
-            JobOffer jobOffer = jobOfferRepository.findById(jobOfferEvaluationDTO.getId()).get();
-            JobOffer jobOfferModify = jobOfferMapper.modifyJobOffer(jobOffer, jobOfferEvaluationDTO);
-            JobOffer aux = jobOfferRepository.save(jobOfferModify);
-            return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.evaluation.success", null, null)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.evaluation.failed", new Object[]{jobOfferEvaluationDTO.getId()}, null));
         }
     }
 

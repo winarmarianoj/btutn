@@ -1,10 +1,12 @@
 package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import com.utn.bolsadetrabajo.exception.JobOfferException;
 import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
 import com.utn.bolsadetrabajo.model.*;
+import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobApplicationRepository;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
@@ -123,6 +125,20 @@ public class JobOfferServiceImpl implements JobOfferService {
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.postulate.success", null, null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{postulateDTO.getJobofferID()}, null));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getJobOfferAllEvaluation(JobOfferEvaluationDTO jobOfferEvaluationDTO) {
+        try {
+            JobOffer jobOffer = repository.findById(jobOfferEvaluationDTO.getId()).get();
+            JobOffer jobOfferModify = mapper.modifyJobOffer(jobOffer, jobOfferEvaluationDTO);
+            if(jobOfferModify.getState().equals(State.REVIEW)) emailService.sendEmailPublisherJobOfferReview(jobOfferModify);
+
+            JobOffer aux = repository.save(jobOfferModify);
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.evaluation.success", null, null)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.evaluation.failed", new Object[]{jobOfferEvaluationDTO.getId()}, null));
         }
     }
 

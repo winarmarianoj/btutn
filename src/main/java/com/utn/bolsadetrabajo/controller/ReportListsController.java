@@ -1,8 +1,6 @@
 package com.utn.bolsadetrabajo.controller;
 
-import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.model.Category;
-import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @Api(value = "JobOffer Controller", description = "Controlador con los endpoints que actúan sobre los JobOffer.")
@@ -56,14 +52,5 @@ public class ReportListsController {
     public ResponseEntity<?> getJobOfferAllWithFilter(@PathVariable String state){
         return reportLists.getJobOfferAllWithFilter(state);
     }
-
-    @ApiOperation(value = "report-lists.getEvaluationAllJobOffers -UTN: Es la respuesta de UTN" +
-            "Evaluacion de sobre cada aviso antes de ser publicado.", response = ResponseEntity.class)
-    @PostMapping("/evaluation")
-    public ResponseEntity<?> getJobOfferAllEvaluation(@RequestBody @Valid JobOfferEvaluationDTO jobOfferEvaluationDTO){
-        return reportLists.getJobOfferAllEvaluation(jobOfferEvaluationDTO);
-    }
-
-
 
 }

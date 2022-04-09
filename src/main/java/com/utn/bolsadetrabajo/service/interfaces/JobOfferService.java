@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.service.interfaces;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -16,4 +17,5 @@ public interface JobOfferService {
 
     ResponseEntity<?> postulate(PostulateDTO postulateDTO);
 
+    ResponseEntity<?> getJobOfferAllEvaluation(JobOfferEvaluationDTO jobOfferEvaluationDTO);
 }

@@ -1,8 +1,6 @@
 package com.utn.bolsadetrabajo.service.reports;
 
-import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.model.Category;
-import com.utn.bolsadetrabajo.model.enums.State;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -17,8 +15,6 @@ public interface ReportLists {
     ResponseEntity<?> getJobApplicantAllByApplicant(Long id);
 
     ResponseEntity<?> getJobApplicantAllByJobOfferSimplePublisher(Long id);
-
-    ResponseEntity<?> getJobOfferAllEvaluation(JobOfferEvaluationDTO jobOfferEvaluationDTO);
 
     ResponseEntity<?> getJobOfferAllByPublisher(Long id);
 

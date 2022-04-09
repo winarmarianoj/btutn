@@ -110,13 +110,12 @@ public class JobOfferMapper {
     }
 
     public JobOffer modifyJobOffer(JobOffer jobOffer, JobOfferEvaluationDTO dto){
-        if(dto.getDecision().equals("APPROVED")){
+        if(dto.getDecision().equals((State.APPROVED).toString())){
             jobOffer.setState(State.PUBLISHED);
-        }else if(dto.getDecision().equals("REJECTED")){
+        }else if(dto.getDecision().equals((State.REJECTED).toString())){
             jobOffer.setState(State.REJECTED);
         }else {
             jobOffer.setState(State.REVIEW);
-            emailService.sendEmailPublisherJobOfferReview(jobOffer);
         }
         return jobOffer;
     }
