@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> activateAccount(String username, String hash) {
         try {
-            User user = repository.findByUsername(username);
+            User user = repository.findByUsernameByState(username);
             if(user.getVerificationCode().equals(hash)){
                 user.setState(State.ACTIVE);
                 repository.save(user);

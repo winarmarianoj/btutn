@@ -48,7 +48,7 @@ public class PersonDTO {
     private String phoneNumber;
 
     //@NotNull(message = "Su Rol no puede estar vacìo")
-    private Roles role;
+    private String role;
 
     //@NotNull(message = "Gènero no puede estar vacìo")
     private String genre;
