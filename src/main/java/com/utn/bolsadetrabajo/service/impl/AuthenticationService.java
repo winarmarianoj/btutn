@@ -38,8 +38,6 @@ public class AuthenticationService implements com.utn.bolsadetrabajo.service.int
     @Override
     public AuthenticationResponse createJwt(AuthenticationRequest authenticationRequest) throws Exception {
         User user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
-        System.out.println(authenticationRequest.getUsername());
-        System.out.println(authenticationRequest.getPassword());
         try {
             if (user.getState().equals(State.ACTIVE)){
                 authenticationManager.authenticate(

@@ -29,18 +29,14 @@ public class PersonServiceImpl implements PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     @Autowired PersonRepository repository;
-    @Autowired
-    EmailService emailService;
+    @Autowired EmailService emailService;
     @Autowired PersonMapper mapper;
     @Autowired MessageSource messageSource;
-    @Autowired
-    UserService userService;
+    @Autowired UserService userService;
     @Autowired Validator validator;
     @Autowired GenerateListTypePerson generateListTypePerson;
-    @Autowired
-    PublisherService publisherService;
-    @Autowired
-    ApplicantService applicantService;
+    @Autowired PublisherService publisherService;
+    @Autowired ApplicantService applicantService;
 
     @Override
     public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
@@ -68,9 +64,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
-            Person person = getPerson(id);
-            person.setDeleted(true);
-            person.getUser().setState(State.DELETED);
+            Person person = mapper.deletePerson(getPerson(id));
             repository.save(person);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
         }catch (Exception e){
@@ -124,8 +118,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private Person getPerson(Long id) {
-        Person person = repository.findById(id).get();
-        return person;
+        return repository.findById(id).get();
     }
 
 }

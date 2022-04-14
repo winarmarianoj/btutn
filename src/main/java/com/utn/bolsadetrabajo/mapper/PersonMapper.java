@@ -5,6 +5,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
+import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.RoleRepository;
 import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.List;
 
 @Component
 public class PersonMapper {
+
+    private static final String ELIMINATED = "Dado de baja";
 
     @Autowired RoleRepository roleRepository;
     @Autowired UserService userService;
@@ -87,5 +90,12 @@ public class PersonMapper {
             list.add(publisherMapper.toResponsePublisher(publisher, ""));
         }
         return list;
+    }
+
+    public Person deletePerson(Person person) {
+        person.setDeleted(true);
+        person.getUser().setUsername(ELIMINATED);
+        person.getUser().setState(State.DELETED);
+        return person;
     }
 }
