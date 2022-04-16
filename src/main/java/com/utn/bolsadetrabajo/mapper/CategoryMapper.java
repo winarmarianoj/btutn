@@ -44,22 +44,21 @@ public class CategoryMapper {
 
     public List<ResponseCategoryDto> toCategoriesList(List<Category> categories) {
         List<ResponseCategoryDto> lists = new ArrayList<>();
-        categories.stream().forEach(ele -> {
+        for(Category ele : categories){
             ResponseCategoryDto dto = toResponsePerson(ele, "");
             lists.add(dto);
-        });
+        }
         return lists;
     }
 
     public List<ResponseSearchCategoryDto> toCategoriesListForFilters(List<Category> categories) {
         List<ResponseSearchCategoryDto> lists = new ArrayList<>();
-        categories.stream().forEach(ele -> {
+        for (Category ele : categories){
             ResponseSearchCategoryDto dto = ResponseSearchCategoryDto.builder()
                     .name(ele.getName())
-                    .description(ele.getDescription())
                     .build();
             lists.add(dto);
-        });
+        }
         return lists;
     }
 }

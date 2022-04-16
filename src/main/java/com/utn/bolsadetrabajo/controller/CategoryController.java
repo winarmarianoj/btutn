@@ -101,7 +101,7 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
-    @GetMapping("/ui")
+    @GetMapping("/by-names")
     public ResponseEntity<?> getFiltersAllCategories(){
         return categoryService.getFiltersAllCategories();
     }

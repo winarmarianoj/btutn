@@ -106,14 +106,10 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<?> getAllCategories() {
         try{
             List<Category> categories = categoryRepository.findAll();
-            for (Category ele : categories) {
-                System.out.println(ele.getName());
-            }
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toCategoriesList(categories));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.lists.failed",
-                            null, null));
+                    .body(messageSource.getMessage("category.lists.failed", null, null));
         }
     }
 
@@ -125,8 +121,7 @@ public class CategoryServiceImpl implements CategoryService {
             return ResponseEntity.status(HttpStatus.OK).body(lists);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.lists.failed",
-                            null, null));
+                    .body(messageSource.getMessage("category.lists.failed", null, null));
         }
     }
 
