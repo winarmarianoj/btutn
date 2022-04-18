@@ -9,7 +9,7 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
 import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
-import com.utn.bolsadetrabajo.service.interfaces.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,7 +23,8 @@ import java.util.List;
 public class ApplicantServiceImpl implements ApplicantService {
 
     @Autowired ApplicantRepository repository;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailGoogleService emailGoogleService;
     @Autowired ApplicantMapper applicantMapper;
     @Autowired MessageSource messageSource;
     @Autowired Validator validator;
@@ -70,7 +71,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             Applicant app = applicantMapper.toModel(null, applicantDTO);
             validator.validPerson(app);
             Applicant applicant = repository.save(app);
-            emailService.createEmailPerson(applicant);
+            emailGoogleService.createEmailPerson(applicant);
             return ResponseEntity.status(HttpStatus.CREATED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.created.success", null,null)));
         }catch (PersonException e){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.created.failed",new Object[] {e.getMessage()}, null));

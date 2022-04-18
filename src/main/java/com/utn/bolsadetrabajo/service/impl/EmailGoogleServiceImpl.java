@@ -7,7 +7,7 @@ import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
-import com.utn.bolsadetrabajo.service.interfaces.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class EmailServiceImpl implements EmailService {
+public class EmailGoogleServiceImpl implements EmailGoogleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailGoogleServiceImpl.class);
     private static final String EMAIL_WELCOME = "Bienvenido a la Bolsa de Trabajo del CUVL-UTN";
     private static final String PATH_BASE = "http://localhost:8082/auth/activate";
     private static final String PUBLICATED = "Ha publicado el siguiente aviso : ";
@@ -41,7 +41,7 @@ public class EmailServiceImpl implements EmailService {
     private String emailFrom;
 
     @Autowired
-    public EmailServiceImpl(MessageSource messageSource, JavaMailSender sender, EmailMapper emailMapper, ParametersRepository parametersRepository) {
+    public EmailGoogleServiceImpl(MessageSource messageSource, JavaMailSender sender, EmailMapper emailMapper, ParametersRepository parametersRepository) {
         this.messageSource = messageSource;
         this.sender = sender;
         this.emailMapper = emailMapper;

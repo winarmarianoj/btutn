@@ -10,6 +10,7 @@ import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobApplicationRepository;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.manager.ManagerService;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
 import com.utn.bolsadetrabajo.util.UserConnectedService;
@@ -32,7 +33,8 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Autowired JobApplicationRepository jobApplicationRepository;
     @Autowired JobOfferMapper mapper;
     @Autowired MessageSource messageSource;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailGoogleService emailGoogleService;
     @Autowired PublisherService publisherService;
     @Autowired ApplicantService applicantService;
     @Autowired UserConnectedService userConnectedService;
@@ -81,7 +83,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             JobOffer jobOffer = repository.save(newJobOffer);
             publisher.getJobOfferList().add(jobOffer);
             publisherService.addJobOffer(publisher);
-            emailService.createEmailJobOfferPublicated(jobOffer, publisher);
+            emailGoogleService.createEmailJobOfferPublicated(jobOffer, publisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponsePublisherJobOffer(jobOffer, messageSource.getMessage("joboffer.created.success", null, null)));
         } catch (JobOfferException e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("joboffer.created.failed",new Object[] {e.getMessage()}, null));
@@ -121,7 +123,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             jobOffer.getJobApplications().add(jobApplication);
             applicantService.postulateJobOffer(applicant);
             repository.save(jobOffer);
-            emailService.createEmailPostulate(jobOffer, applicant);
+            emailGoogleService.createEmailPostulate(jobOffer, applicant);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.postulate.success", null, null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.postulate.failed", new Object[]{postulateDTO.getJobofferID()}, null));
@@ -133,7 +135,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         try {
             JobOffer jobOffer = repository.findById(jobOfferEvaluationDTO.getId()).get();
             JobOffer jobOfferModify = mapper.modifyJobOffer(jobOffer, jobOfferEvaluationDTO);
-            if(jobOfferModify.getState().equals(State.REVIEW)) emailService.sendEmailPublisherJobOfferReview(jobOfferModify);
+            if(jobOfferModify.getState().equals(State.REVIEW)) emailGoogleService.sendEmailPublisherJobOfferReview(jobOfferModify);
 
             JobOffer aux = repository.save(jobOfferModify);
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.evaluation.success", null, null)));

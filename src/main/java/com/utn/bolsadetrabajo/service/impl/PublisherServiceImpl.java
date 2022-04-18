@@ -10,7 +10,7 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.PublisherRepository;
-import com.utn.bolsadetrabajo.service.interfaces.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Autowired PublisherRepository repository;
     @Autowired ParametersRepository parametersRepository;
     @Autowired
-    EmailService emailService;
+    EmailGoogleService emailGoogleService;
     @Autowired PublisherMapper publisherMapper;
     @Autowired PersonMapper personMapper;
     @Autowired MessageSource messageSource;
@@ -74,7 +74,7 @@ public class PublisherServiceImpl implements PublisherService {
             Publisher newPublisher = publisherMapper.toModel(null, personDTO);
             validator.validPerson(newPublisher);
             Publisher publisher = repository.save(newPublisher);
-            emailService.createEmailPerson(publisher);
+            emailGoogleService.createEmailPerson(publisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(publisher, messageSource.getMessage("publisher.created.success", null,null)));
         }catch (PersonException e){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.created.failed",new Object[] {e.getMessage()}, null));

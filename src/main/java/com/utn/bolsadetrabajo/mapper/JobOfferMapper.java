@@ -6,7 +6,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.CategoryRepository;
-import com.utn.bolsadetrabajo.service.interfaces.EmailService;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -17,11 +17,11 @@ import java.util.List;
 public class JobOfferMapper {
 
     private final CategoryRepository categoryRepository;
-    private final EmailService emailService;
+    private final EmailGoogleService emailGoogleService;
 
-    public JobOfferMapper(CategoryRepository categoryRepository, EmailService emailService) {
+    public JobOfferMapper(CategoryRepository categoryRepository, EmailGoogleService emailGoogleService) {
         this.categoryRepository = categoryRepository;
-        this.emailService = emailService;
+        this.emailGoogleService = emailGoogleService;
     }
 
     public JobOffer toModel(JobOfferDTO dto, Publisher publisher) {

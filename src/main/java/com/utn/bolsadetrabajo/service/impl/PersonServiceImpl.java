@@ -8,9 +8,9 @@ import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
-import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.PersonRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
+import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.reports.GenerateListTypePerson;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
@@ -29,7 +29,8 @@ public class PersonServiceImpl implements PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     @Autowired PersonRepository repository;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailGoogleService emailGoogleService;
     @Autowired PersonMapper mapper;
     @Autowired MessageSource messageSource;
     @Autowired UserService userService;
@@ -78,7 +79,7 @@ public class PersonServiceImpl implements PersonService {
             Person newPerson = mapper.toModel(personDTO);
             validator.validPerson(newPerson);
             Person person = repository.save(newPerson);
-            emailService.createEmailPerson(person);
+            emailGoogleService.createEmailPerson(person);
             return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponsePerson(person, messageSource.getMessage("person.created.success", null,null)));
         }catch (PersonException e){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("person.create.failed",new Object[] {e.getMessage()}, null));
