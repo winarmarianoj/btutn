@@ -1,4 +1,4 @@
-package com.utn.bolsadetrabajo.service.interfaces.emails;
+package com.utn.bolsadetrabajo.service.emails;
 
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.Applicant;

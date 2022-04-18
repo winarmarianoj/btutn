@@ -10,7 +10,7 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.PublisherRepository;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,7 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Autowired PublisherRepository repository;
     @Autowired ParametersRepository parametersRepository;
-    @Autowired
-    EmailGoogleService emailGoogleService;
+    @Autowired EmailGoogleService emailGoogleService;
     @Autowired PublisherMapper publisherMapper;
     @Autowired PersonMapper personMapper;
     @Autowired MessageSource messageSource;
@@ -43,15 +42,11 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public ResponseEntity<?> update(Long id, PersonDTO personDTO) {
-        try {
-            Publisher pub = getPublisher(id);
-            Publisher newPublisher = publisherMapper.toUpdate(pub, personDTO);
-            validator.validPerson(newPublisher);
-            Publisher aux = repository.save(newPublisher);
-            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(aux, messageSource.getMessage("publisher.update.success", null,null)));
-        }catch (PersonException e){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.update.failed",new Object[] {e.getMessage()}, null));
+    public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
+        if(personDTO.getId() != null && personDTO.getId() > ZERO){
+            return updatePublisher(personDTO);
+        }else {
+            return save(personDTO);
         }
     }
 
@@ -65,19 +60,6 @@ public class PublisherServiceImpl implements PublisherService {
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("publisher.deleted.success", null,null));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.deleted.failed", new Object[] {id}, null));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
-        try{
-            Publisher newPublisher = publisherMapper.toModel(null, personDTO);
-            validator.validPerson(newPublisher);
-            Publisher publisher = repository.save(newPublisher);
-            emailGoogleService.createEmailPerson(publisher);
-            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(publisher, messageSource.getMessage("publisher.created.success", null,null)));
-        }catch (PersonException e){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.created.failed",new Object[] {e.getMessage()}, null));
         }
     }
 
@@ -102,7 +84,31 @@ public class PublisherServiceImpl implements PublisherService {
         return repository.findByUser(user);
     }
 
+    private ResponseEntity<?> updatePublisher(PersonDTO publisherDTO) {
+        try {
+            Publisher newPublisher = publisherMapper.toUpdate(getPublisher(publisherDTO.getId()), publisherDTO);
+            validator.validPerson(newPublisher);
+            Publisher aux = repository.save(newPublisher);
+            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(aux, messageSource.getMessage("publisher.update.success", null,null)));
+        }catch (PersonException e){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.update.failed",new Object[] {e.getMessage()}, null));
+        }
+    }
+
+    private ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
+        try{
+            Publisher newPublisher = publisherMapper.toModel(null, personDTO);
+            validator.validPerson(newPublisher);
+            Publisher publisher = repository.save(newPublisher);
+            emailGoogleService.createEmailPerson(publisher);
+            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(publisher, messageSource.getMessage("publisher.created.success", null,null)));
+        }catch (PersonException e){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.created.failed",new Object[] {e.getMessage()}, null));
+        }
+    }
+
     private Publisher getPublisher(Long id) {
         return repository.findById(id).get();
     }
+
 }

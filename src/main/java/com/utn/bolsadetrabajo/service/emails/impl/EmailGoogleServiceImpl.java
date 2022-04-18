@@ -1,4 +1,4 @@
-package com.utn.bolsadetrabajo.service.impl;
+package com.utn.bolsadetrabajo.service.emails.impl;
 
 import com.utn.bolsadetrabajo.dto.response.ResponseEmailDto;
 import com.utn.bolsadetrabajo.mapper.EmailMapper;
@@ -7,7 +7,7 @@ import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -19,6 +19,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PersonDTO {
 
+    private Long id;
+
     @NotNull(message = "Nombre no puede estar vacìo.")
     @Size(min = 4, max = 64, message = "El Nombre debe tener un tamaño entre 4 a 64 caracteres.")
     private String name;

@@ -5,6 +5,7 @@ import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
+import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.service.interfaces.JobOfferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +48,7 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid JobOfferDTO jobOfferDTO){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid JobOfferDTO jobOfferDTO) throws PersonException {
         return jobOfferService.update(id, jobOfferDTO);
     }
 
@@ -62,12 +63,6 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> delete(@PathVariable Long id){
         return jobOfferService.delete(id);
-    }
-
-    @Override
-    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> create(@RequestBody @Valid JobOfferDTO jobOfferDTO)  {
-        return null;
     }
 
     @Override

@@ -63,12 +63,9 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> findById(Long id) {
         User user = repository.findById(id).get();
         try{
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    userMapper.toUserResponseDto(user, messageSource.getMessage("user.get.success", new Object[] {id}, null))
-            );
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(userMapper.toUserResponseDto(user, messageSource.getMessage("user.get.success", new Object[] {id}, null)));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("user.get.failure",new Object[] {id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("user.get.failure",new Object[] {id}, null));
         }
     }
 
@@ -89,18 +86,14 @@ public class UserServiceImpl implements UserService {
             links.add(linkTo(methodOn(UserController.class).allUsers(numberPage)).withSelfRel());
 
             if(page.hasPrevious()){
-                links.add(linkTo(methodOn(UserController.class)
-                        .allUsers(numberPage - 1)).withRel("prev"));
+                links.add(linkTo(methodOn(UserController.class).allUsers(numberPage - 1)).withRel("prev"));
             }
             if(page.hasNext()){
-                links.add(linkTo(methodOn(UserController.class)
-                        .allUsers(numberPage + 1)).withRel("next"));
+                links.add(linkTo(methodOn(UserController.class).allUsers(numberPage + 1)).withRel("next"));
             }
             return ResponseEntity.status(HttpStatus.OK).body(CollectionModel.of(page, links));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("user.all.users.failed",
-                            null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("user.all.users.failed",null, null));
         }
     }
 
@@ -112,13 +105,9 @@ public class UserServiceImpl implements UserService {
                 user.setState(State.ACTIVE);
                 repository.save(user);
             }
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    messageSource.getMessage("user.activate.success", null,null)
-            );
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(messageSource.getMessage("user.activate.success", null,null));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED)
-                    .body(messageSource.getMessage("user.activate.failed",
-                            new Object[] {username}, null));
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(messageSource.getMessage("user.activate.failed", new Object[] {username}, null));
         }
     }
 

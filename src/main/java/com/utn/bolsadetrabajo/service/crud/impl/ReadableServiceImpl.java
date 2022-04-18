@@ -1,4 +1,4 @@
-package com.utn.bolsadetrabajo.service.manager;
+package com.utn.bolsadetrabajo.service.crud.impl;
 
 import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Person;
@@ -10,12 +10,13 @@ import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
 import com.utn.bolsadetrabajo.service.interfaces.PersonService;
 import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.service.interfaces.UserService;
+import com.utn.bolsadetrabajo.service.crud.Readable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ManagerServiceImpl implements ManagerService {
+public class ReadableServiceImpl implements Readable {
 
     @Autowired PersonRepository repository;
     @Autowired PersonService personService;

@@ -4,13 +4,10 @@ import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
-import com.utn.bolsadetrabajo.model.Applicant;
-import com.utn.bolsadetrabajo.model.Person;
-import com.utn.bolsadetrabajo.model.Publisher;
-import com.utn.bolsadetrabajo.model.User;
+import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.repository.PersonRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.reports.GenerateListTypePerson;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
@@ -29,8 +26,7 @@ public class PersonServiceImpl implements PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     @Autowired PersonRepository repository;
-    @Autowired
-    EmailGoogleService emailGoogleService;
+    @Autowired EmailGoogleService emailGoogleService;
     @Autowired PersonMapper mapper;
     @Autowired MessageSource messageSource;
     @Autowired UserService userService;
@@ -50,10 +46,47 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseEntity<?> update(Long id, PersonDTO personDTO) {
+    public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
+        if(personDTO.getId() != null && personDTO.getId() > ZERO){
+            return updatePerson(personDTO);
+        }else {
+            return save(personDTO);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> delete(Long id) {
         try{
-            Person person = getPerson(id);
-            Person newPer = mapper.toUpdate(person, personDTO);
+            repository.save(mapper.deletePerson(getPerson(id)));
+            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.deleted.failed", new Object[] {id}, null));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAll() {
+        return allPersonList(mapper.toPersonList(repository.findAll()));
+    }
+
+    @Override
+    public ResponseEntity<?> getAllApplicant(int numberPage) {
+        return allPersonList(mapper.toApplicantList(applicantService.getAll()));
+    }
+
+    @Override
+    public ResponseEntity<?> getAllPublisher(int numberPage) {
+        return allPersonList(mapper.toPublisherList(publisherService.getAll()));
+    }
+
+    @Override
+    public Person getPersonByUsername(String username) {
+        return repository.findByUser(userService.findByUsername(username));
+    }
+
+    private ResponseEntity<?> updatePerson(PersonDTO personDTO) {
+        try{
+            Person newPer = mapper.toUpdate(getPerson(personDTO.getId()), personDTO);
             validator.validPerson(newPer);
             Person aux = repository.save(newPer);
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePerson(aux, messageSource.getMessage("person.update.success", null,null)));
@@ -62,19 +95,7 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
-    @Override
-    public ResponseEntity<?> delete(Long id) {
-        try{
-            Person person = mapper.deletePerson(getPerson(id));
-            repository.save(person);
-            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.deleted.failed", new Object[] {id}, null));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
+    private ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
         try{
             Person newPerson = mapper.toModel(personDTO);
             validator.validPerson(newPerson);
@@ -84,30 +105,6 @@ public class PersonServiceImpl implements PersonService {
         }catch (PersonException e){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("person.create.failed",new Object[] {e.getMessage()}, null));
         }
-    }
-
-    @Override
-    public ResponseEntity<?> getAll() {
-        List<Person> personList = repository.findAll();
-        return allPersonList(mapper.toPersonList(personList));
-    }
-
-    @Override
-    public ResponseEntity<?> getAllApplicant(int numberPage) {
-        List<Applicant> applicants = applicantService.getAll();
-        return allPersonList(mapper.toApplicantList(applicants));
-    }
-
-    @Override
-    public ResponseEntity<?> getAllPublisher(int numberPage) {
-        List<Publisher> publishers = publisherService.getAll();
-        return allPersonList(mapper.toPublisherList(publishers));
-    }
-
-    @Override
-    public Person getPersonByUsername(String username) {
-        User user = userService.findByUsername(username);
-        return repository.findByUser(user);
     }
 
     private ResponseEntity<?> allPersonList(List<ResponsePersonDto> lists) {

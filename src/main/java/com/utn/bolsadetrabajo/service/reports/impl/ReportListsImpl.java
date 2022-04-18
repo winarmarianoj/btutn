@@ -10,7 +10,7 @@ import com.utn.bolsadetrabajo.model.JobApplication;
 import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
-import com.utn.bolsadetrabajo.service.manager.ManagerService;
+import com.utn.bolsadetrabajo.service.crud.Readable;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -38,7 +38,7 @@ public class ReportListsImpl implements ReportLists {
     @Autowired private JobOfferRepository jobOfferRepository;
     @Autowired private MessageSource messageSource;
     @Autowired private JobOfferMapper jobOfferMapper;
-    @Autowired private ManagerService managerService;
+    @Autowired private Readable readableService;
     @Autowired private JobApplicationMapper jobApplicationMapper;
 
     @Override
@@ -76,7 +76,7 @@ public class ReportListsImpl implements ReportLists {
     @Override
     public ResponseEntity<?> getJobApplicantAllByApplicant(Long id) {
         try {
-            Applicant applicant = managerService.getPersonTypeApplicantByIdUser(id);
+            Applicant applicant = readableService.getPersonTypeApplicantByIdUser(id);
             return getResponseEntity(applicant.getJobApplications());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed", null, null));
@@ -95,7 +95,7 @@ public class ReportListsImpl implements ReportLists {
     @Override
     public ResponseEntity<?> getJobOfferAllByPublisher(Long id) {
         try {
-            List<JobOffer> jobOffers = managerService.getPersonTypePublisherByIdUser(id).getJobOfferList();
+            List<JobOffer> jobOffers = readableService.getPersonTypePublisherByIdUser(id).getJobOfferList();
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferList(jobOffers));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisehr.all.joboffer.failed",null, null));
@@ -105,7 +105,7 @@ public class ReportListsImpl implements ReportLists {
     @Override
     public ResponseEntity<?> getJobOfferAllSimplePublisher(Category filter, Long id) {
         try {
-            List<JobOffer> jobOffers = managerService.getPersonTypePublisherByIdUser(id).getJobOfferList();
+            List<JobOffer> jobOffers = readableService.getPersonTypePublisherByIdUser(id).getJobOfferList();
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferListSimplePublisherByFilter(jobOffers, filter));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisehr.all.joboffer.failed",null, null));

@@ -1,11 +1,10 @@
-package com.utn.bolsadetrabajo.service.manager;
+package com.utn.bolsadetrabajo.service.crud;
 
 import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Publisher;
 import org.springframework.http.ResponseEntity;
 
-public interface ManagerService {
-
+public interface Readable {
     ResponseEntity<?> getById(Long id);
 
     ResponseEntity<?> getByIdentification(String identification);

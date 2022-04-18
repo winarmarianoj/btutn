@@ -4,8 +4,8 @@ import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
+import com.utn.bolsadetrabajo.service.crud.Readable;
 import com.utn.bolsadetrabajo.service.interfaces.PersonService;
-import com.utn.bolsadetrabajo.service.manager.ManagerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RequestMapping("/person")
 public class PersonController implements Controllers<PersonDTO>, Messages {
 
-    @Autowired ManagerService service;
+    @Autowired Readable readableService;
     @Autowired PersonService personService;
 
     @Override
@@ -35,7 +35,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
-        return service.getById(id);
+        return readableService.getById(id);
     }
 
     @ApiOperation(value = "${person.getByDni} - Devuelve los datos de una persona por su DNI", response = ResponseEntity.class)
@@ -47,7 +47,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
     })
     @GetMapping("/identification/{identification}")
     public ResponseEntity<?> getByDni(@PathVariable String identification){
-        return service.getByIdentification(identification);
+        return readableService.getByIdentification(identification);
     }
 
     /**
@@ -57,7 +57,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
      */
     @GetMapping(path = "/userId/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getByIdUser(@PathVariable Long id){
-        return service.getByIdUser(id);
+        return readableService.getByIdUser(id);
     }
 
     @ApiOperation(value = "${person.update} - Modifica los datos de una persona", response = ResponseEntity.class)
@@ -68,7 +68,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid PersonDTO personDTO){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid PersonDTO personDTO) throws PersonException {
         return personService.update(id, personDTO);
     }
 
@@ -82,18 +82,6 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> delete(@PathVariable Long id){
         return personService.delete(id);
-    }
-
-    @ApiOperation(value = "${person.create} - Crea una Persona nueva", response = ResponseEntity.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = OK_RESPONSE),
-            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
-            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
-    })
-    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> create(@RequestBody @Valid PersonDTO personDTO) throws PersonException {
-        return personService.save(personDTO);
     }
 
     @ApiOperation(value = "person.getAll - Devuelve La Lista de Todas las Personas", response = ResponseEntity.class)

@@ -9,7 +9,7 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
 import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,8 +23,7 @@ import java.util.List;
 public class ApplicantServiceImpl implements ApplicantService {
 
     @Autowired ApplicantRepository repository;
-    @Autowired
-    EmailGoogleService emailGoogleService;
+    @Autowired EmailGoogleService emailGoogleService;
     @Autowired ApplicantMapper applicantMapper;
     @Autowired MessageSource messageSource;
     @Autowired Validator validator;
@@ -40,15 +39,11 @@ public class ApplicantServiceImpl implements ApplicantService {
     }
 
     @Override
-    public ResponseEntity<?> update(Long id, PersonDTO applicantDTO) {
-        try{
-            Applicant app = getApplicant(id);
-            Applicant newApplicant = applicantMapper.toUpdate(app, applicantDTO);
-            validator.validPerson(newApplicant);
-            Applicant aux = repository.save(newApplicant);
-            return ResponseEntity.status(HttpStatus.OK).body(applicantMapper.toResponseApplicant(aux, messageSource.getMessage("applicant.update.success", null,null)));
-        }catch (PersonException e){
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("applicant.update.failed",new Object[] {e.getMessage()}, null));
+    public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
+        if(personDTO.getId() != null && personDTO.getId() > ZERO){
+            return updateApplicant(personDTO);
+        }else {
+            return save(personDTO);
         }
     }
 
@@ -62,19 +57,6 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.deleted.success", null,null));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.deleted.failed", new Object[] {id}, null));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> save(PersonDTO applicantDTO) throws PersonException {
-        try{
-            Applicant app = applicantMapper.toModel(null, applicantDTO);
-            validator.validPerson(app);
-            Applicant applicant = repository.save(app);
-            emailGoogleService.createEmailPerson(applicant);
-            return ResponseEntity.status(HttpStatus.CREATED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.created.success", null,null)));
-        }catch (PersonException e){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.created.failed",new Object[] {e.getMessage()}, null));
         }
     }
 
@@ -97,6 +79,29 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public Applicant getApplicantByUser(User user) {
         return repository.findByUser(user);
+    }
+
+    public ResponseEntity<?> updateApplicant(PersonDTO applicantDTO) {
+        try{
+            Applicant newApplicant = applicantMapper.toUpdate(getApplicant(applicantDTO.getId()), applicantDTO);
+            validator.validPerson(newApplicant);
+            Applicant aux = repository.save(newApplicant);
+            return ResponseEntity.status(HttpStatus.OK).body(applicantMapper.toResponseApplicant(aux, messageSource.getMessage("applicant.update.success", null,null)));
+        }catch (PersonException e){
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("applicant.update.failed",new Object[] {e.getMessage()}, null));
+        }
+    }
+
+    private ResponseEntity<?> save(PersonDTO applicantDTO) throws PersonException {
+        try{
+            Applicant app = applicantMapper.toModel(null, applicantDTO);
+            validator.validPerson(app);
+            Applicant applicant = repository.save(app);
+            emailGoogleService.createEmailPerson(applicant);
+            return ResponseEntity.status(HttpStatus.CREATED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.created.success", null,null)));
+        }catch (PersonException e){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.created.failed",new Object[] {e.getMessage()}, null));
+        }
     }
 
     private Applicant getApplicant(Long id) {

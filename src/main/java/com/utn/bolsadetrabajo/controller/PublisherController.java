@@ -29,20 +29,8 @@ public class PublisherController implements Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid PersonDTO publisherDTO){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid PersonDTO publisherDTO) throws PersonException {
         return publisherService.update(id, publisherDTO);
-    }
-
-    @ApiOperation(value = "${publisher.create} - Crea un objeto Publisher", response = ResponseEntity.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = OK_RESPONSE),
-            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
-            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
-    })
-    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> create(@RequestBody @Valid PersonDTO publisherDTO) throws PersonException {
-        return publisherService.save(publisherDTO);
     }
 
 }

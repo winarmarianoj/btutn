@@ -6,7 +6,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.CategoryRepository;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

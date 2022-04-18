@@ -1,4 +1,4 @@
-package com.utn.bolsadetrabajo.service.interfaces.emails;
+package com.utn.bolsadetrabajo.service.emails;
 
 public interface EmailGoogleService extends IEmailService{
 }

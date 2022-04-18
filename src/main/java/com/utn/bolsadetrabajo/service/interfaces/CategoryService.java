@@ -1,19 +1,14 @@
 package com.utn.bolsadetrabajo.service.interfaces;
 
 import com.utn.bolsadetrabajo.dto.request.CategoryDTO;
+import com.utn.bolsadetrabajo.service.crud.Removable;
+import com.utn.bolsadetrabajo.service.crud.Writeable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
-public interface CategoryService {
+public interface CategoryService extends Removable, Writeable<CategoryDTO> {
     ResponseEntity<?> getById(Long id);
 
-    ResponseEntity<?> update(Long id, CategoryDTO categoryDTO);
-
-    ResponseEntity<?> delete(Long id);
-
-    ResponseEntity<?> save(CategoryDTO categoryDTO);
-
-    ResponseEntity<?> getAllCategories();
+    ResponseEntity<?> getAll();
 
     ResponseEntity<?> getFiltersAllCategories();
 }

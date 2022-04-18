@@ -9,9 +9,9 @@ import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobApplicationRepository;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
+import com.utn.bolsadetrabajo.service.crud.Readable;
 import com.utn.bolsadetrabajo.service.interfaces.*;
-import com.utn.bolsadetrabajo.service.interfaces.emails.EmailGoogleService;
-import com.utn.bolsadetrabajo.service.manager.ManagerService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
 import com.utn.bolsadetrabajo.util.UserConnectedService;
 import com.utn.bolsadetrabajo.validation.Validator;
@@ -27,21 +27,18 @@ import java.util.List;
 @Service
 public class JobOfferServiceImpl implements JobOfferService {
 
-    private static final int ZERO = 0;
-
     @Autowired JobOfferRepository repository;
     @Autowired JobApplicationRepository jobApplicationRepository;
     @Autowired JobOfferMapper mapper;
     @Autowired MessageSource messageSource;
-    @Autowired
-    EmailGoogleService emailGoogleService;
+    @Autowired EmailGoogleService emailGoogleService;
     @Autowired PublisherService publisherService;
     @Autowired ApplicantService applicantService;
     @Autowired UserConnectedService userConnectedService;
     @Autowired PersonService personService;
     @Autowired ReportLists reportLists;
     @Autowired Validator validJobOffer;
-    @Autowired ManagerService managerService;
+    @Autowired Readable readableService;
 
     @Override
     public ResponseEntity<?> getJobOfferById(Long id) {
@@ -61,32 +58,6 @@ public class JobOfferServiceImpl implements JobOfferService {
             return updateJobOffer(jobOffer, jobOfferDTO);
         }else {
             return create(userIdByPublisher, jobOfferDTO);
-        }
-    }
-
-    private ResponseEntity<?> updateJobOffer(JobOffer jobOffer, JobOfferDTO jobOfferDTO) {
-        try {
-            JobOffer newJobOffer = mapper.updateJobOffer(jobOffer, jobOfferDTO);
-            validJobOffer.validJobOffer(newJobOffer);
-            JobOffer aux = repository.save(newJobOffer);
-            return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.update.success", null, null)));
-        } catch (JobOfferException e) {
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("joboffer.update.failed",new Object[] {e.getMessage()}, null));
-        }
-    }
-
-    private ResponseEntity<?> create(Long userIdByPublisher, JobOfferDTO jobOfferDTO) {
-        try {
-            Publisher publisher = managerService.getPersonTypePublisherByIdUser(userIdByPublisher);
-            JobOffer newJobOffer = mapper.toModel(jobOfferDTO, publisher);
-            validJobOffer.validJobOffer(newJobOffer);
-            JobOffer jobOffer = repository.save(newJobOffer);
-            publisher.getJobOfferList().add(jobOffer);
-            publisherService.addJobOffer(publisher);
-            emailGoogleService.createEmailJobOfferPublicated(jobOffer, publisher);
-            return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponsePublisherJobOffer(jobOffer, messageSource.getMessage("joboffer.created.success", null, null)));
-        } catch (JobOfferException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("joboffer.created.failed",new Object[] {e.getMessage()}, null));
         }
     }
 
@@ -116,7 +87,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     public ResponseEntity<?> postulate(PostulateDTO postulateDTO) {
         try {
-            Applicant applicant = managerService.getPersonTypeApplicantByIdUser(postulateDTO.getApplicantID());
+            Applicant applicant = readableService.getPersonTypeApplicantByIdUser(postulateDTO.getApplicantID());
             JobOffer jobOffer = getJobOffer(postulateDTO.getJobofferID());
             JobApplication jobApplication = saveJobApplication(applicant, jobOffer);
             applicant.getJobApplications().add(jobApplication);
@@ -141,6 +112,32 @@ public class JobOfferServiceImpl implements JobOfferService {
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.evaluation.success", null, null)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.evaluation.failed", new Object[]{jobOfferEvaluationDTO.getId()}, null));
+        }
+    }
+
+    private ResponseEntity<?> updateJobOffer(JobOffer jobOffer, JobOfferDTO jobOfferDTO) {
+        try {
+            JobOffer newJobOffer = mapper.updateJobOffer(jobOffer, jobOfferDTO);
+            validJobOffer.validJobOffer(newJobOffer);
+            JobOffer aux = repository.save(newJobOffer);
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.update.success", null, null)));
+        } catch (JobOfferException e) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("joboffer.update.failed",new Object[] {e.getMessage()}, null));
+        }
+    }
+
+    private ResponseEntity<?> create(Long userIdByPublisher, JobOfferDTO jobOfferDTO) {
+        try {
+            Publisher publisher = readableService.getPersonTypePublisherByIdUser(userIdByPublisher);
+            JobOffer newJobOffer = mapper.toModel(jobOfferDTO, publisher);
+            validJobOffer.validJobOffer(newJobOffer);
+            JobOffer jobOffer = repository.save(newJobOffer);
+            publisher.getJobOfferList().add(jobOffer);
+            publisherService.addJobOffer(publisher);
+            emailGoogleService.createEmailJobOfferPublicated(jobOffer, publisher);
+            return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponsePublisherJobOffer(jobOffer, messageSource.getMessage("joboffer.created.success", null, null)));
+        } catch (JobOfferException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("joboffer.created.failed",new Object[] {e.getMessage()}, null));
         }
     }
 

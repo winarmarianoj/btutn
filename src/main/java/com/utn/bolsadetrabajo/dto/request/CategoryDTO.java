@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class CategoryDTO {
 
+    private Long id;
+
     @NotNull(message = "Nombre no puede estar vacìo.")
     @Size(min = 4, max = 64, message = "El Nombre debe tener un tamaño entre 4 a 64 caracteres.")
     private String name;

@@ -1,6 +1,6 @@
-package com.utn.bolsadetrabajo.service.impl;
+package com.utn.bolsadetrabajo.service.reports.impl;
 
-import com.utn.bolsadetrabajo.service.interfaces.ReportService;
+import com.utn.bolsadetrabajo.service.reports.ReportService;
 import com.utn.bolsadetrabajo.service.reports.impl.ApplicantReportImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
-import com.utn.bolsadetrabajo.service.interfaces.ReportService;
+import com.utn.bolsadetrabajo.service.reports.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

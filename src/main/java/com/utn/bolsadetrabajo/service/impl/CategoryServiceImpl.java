@@ -44,72 +44,40 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<?> getById(Long id) {
         try{
             Category category = categoryRepository.getById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(
-                    categoryMapper.toResponsePerson(category,
-                            messageSource.getMessage("category.response.success", null,null))
-            );
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(categoryMapper.toResponsePerson(category, messageSource.getMessage("category.response.success", null,null)));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.response.failed",
-                            new Object[] {id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.response.failed", new Object[] {id}, null));
         }
     }
 
     @Override
     public ResponseEntity<?> update(Long id, CategoryDTO categoryDTO) {
-        try{
-            Category category = categoryRepository.getById(id);
-            Category newCategory = categoryMapper.toModelUpdate(category, categoryDTO);
-            validCategory.validCategory(newCategory);
-            Category aux = categoryRepository.save(newCategory);
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    categoryMapper.toResponsePerson(aux,
-                            messageSource.getMessage("category.update.success", null,null))
-            );
-        }catch (CategoryException e){
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
-                    .body(messageSource.getMessage("category.update.failed",new Object[] {e.getMessage()}, null));
+        if(categoryDTO.getId() != null && categoryDTO.getId() > ZERO){
+            return updateCategory(categoryDTO);
+        }else {
+            return save(categoryDTO);
         }
     }
 
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
-            Category category = categoryRepository.findById(id).get();
+            Category category = getCategory(id);
             category.setDeleted(true);
             categoryRepository.save(category);
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    messageSource.getMessage("category.delete.success", new Object[] {id},null)
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("category.delete.success", new Object[] {id},null));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.delete.failed",
-                            new Object[] {id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.delete.failed", new Object[] {id}, null));
         }
     }
 
     @Override
-    public ResponseEntity<?> save(CategoryDTO categoryDTO) {
-        try{
-            Category category = categoryMapper.toModel(categoryDTO);
-            validCategory.validCategory(category);
-            Category newCategory = categoryRepository.save(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    categoryMapper.toResponsePerson(newCategory,
-                            messageSource.getMessage("category.created.success", null,null)));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("category.created.failed",new Object[] {e.getMessage()}, null));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> getAllCategories() {
+    public ResponseEntity<?> getAll() {
         try{
             List<Category> categories = categoryRepository.findAll();
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toCategoriesList(categories));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.lists.failed", null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.lists.failed", null, null));
         }
     }
 
@@ -120,8 +88,33 @@ public class CategoryServiceImpl implements CategoryService {
             List<ResponseSearchCategoryDto> lists = categoryMapper.toCategoriesListForFilters(categories);
             return ResponseEntity.status(HttpStatus.OK).body(lists);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(messageSource.getMessage("category.lists.failed", null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.lists.failed", null, null));
+        }
+    }
+
+    private ResponseEntity<?> updateCategory(CategoryDTO categoryDTO) {
+        try{
+            Category newCategory = categoryMapper.toModelUpdate(getCategory(categoryDTO.getId()), categoryDTO);
+            validCategory.validCategory(newCategory);
+            Category aux = categoryRepository.save(newCategory);
+            return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toResponsePerson(aux, messageSource.getMessage("category.update.success", null,null)));
+        }catch (CategoryException e){
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("category.update.failed",new Object[] {e.getMessage()}, null));
+        }
+    }
+
+    private Category getCategory(Long id) {
+        return categoryRepository.findById(id).get();
+    }
+
+    private ResponseEntity<?> save(CategoryDTO categoryDTO) {
+        try{
+            Category category = categoryMapper.toModel(categoryDTO);
+            validCategory.validCategory(category);
+            Category newCategory = categoryRepository.save(category);
+            return ResponseEntity.status(HttpStatus.CREATED).body(categoryMapper.toResponsePerson(newCategory, messageSource.getMessage("category.created.success", null,null)));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("category.created.failed",new Object[] {e.getMessage()}, null));
         }
     }
 
