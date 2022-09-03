@@ -9,6 +9,8 @@ import com.utn.bolsadetrabajo.repository.CategoryRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.service.interfaces.CategoryService;
 import com.utn.bolsadetrabajo.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.Link;
@@ -22,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     private CategoryRepository categoryRepository;
     private CategoryMapper categoryMapper;
@@ -46,6 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = categoryRepository.getById(id);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(categoryMapper.toResponsePerson(category, messageSource.getMessage("category.response.success", null,null)));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("category.response.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.response.failed", new Object[] {id}, null));
         }
     }
@@ -67,6 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.save(category);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("category.delete.success", new Object[] {id},null));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("category.delete.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.delete.failed", new Object[] {id}, null));
         }
     }
@@ -77,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
             List<Category> categories = categoryRepository.findAll();
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toCategoriesList(categories));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("category.lists.failed " + e.getMessage(), null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.lists.failed", null, null));
         }
     }
@@ -88,6 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
             List<ResponseSearchCategoryDto> lists = categoryMapper.toCategoriesListForFilters(categories);
             return ResponseEntity.status(HttpStatus.OK).body(lists);
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("category.lists.failed " + e.getMessage(), null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("category.lists.failed", null, null));
         }
     }
@@ -99,6 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category aux = categoryRepository.save(newCategory);
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toResponsePerson(aux, messageSource.getMessage("category.update.success", null,null)));
         }catch (CategoryException e){
+            LOGGER.error(messageSource.getMessage("category.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("category.update.failed",new Object[] {e.getMessage()}, null));
         }
     }
@@ -114,6 +122,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category newCategory = categoryRepository.save(category);
             return ResponseEntity.status(HttpStatus.CREATED).body(categoryMapper.toResponsePerson(newCategory, messageSource.getMessage("category.created.success", null,null)));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("category.created.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("category.created.failed",new Object[] {e.getMessage()}, null));
         }
     }

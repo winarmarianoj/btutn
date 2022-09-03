@@ -6,13 +6,11 @@ import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
-import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,7 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class EmailGoogleServiceImpl implements EmailGoogleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailGoogleServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailGoogleServiceImpl.class);
     private static final String EMAIL_WELCOME = "Bienvenido a la Bolsa de Trabajo del CUVL-UTN";
     private static final String PATH_BASE = "http://localhost:8082/auth/activate";
     private static final String PUBLICATED = "Ha publicado el siguiente aviso : ";
@@ -32,26 +30,22 @@ public class EmailGoogleServiceImpl implements EmailGoogleService {
     private static final String APPLICANT_POSTULATE = "Se ha postulado al siguiente aviso : ";
     private static final String STATE_REVIEW = "Tiene un aviso en estado de revisiòn";
 
-    private MessageSource messageSource;
-    private JavaMailSender sender;
-    private EmailMapper emailMapper;
-    private ParametersRepository parametersRepository;
+    private final JavaMailSender sender;
+    private final EmailMapper emailMapper;
 
     @Value("${spring.mail.username}")
     private String emailFrom;
 
     @Autowired
-    public EmailGoogleServiceImpl(MessageSource messageSource, JavaMailSender sender, EmailMapper emailMapper, ParametersRepository parametersRepository) {
-        this.messageSource = messageSource;
+    public EmailGoogleServiceImpl(JavaMailSender sender, EmailMapper emailMapper) {
         this.sender = sender;
         this.emailMapper = emailMapper;
-        this.parametersRepository = parametersRepository;
     }
 
     @Override
     public void createEmailPerson(Person app){
         ResponseEmailDto email = emailMapper.toModelEmailCreate(app, PATH_BASE, EMAIL_WELCOME);
-        logger.info("Construyendo el cuerpo del mail a enviar al Applicant...");
+        LOGGER.info("Construyendo el cuerpo del mail a enviar al Applicant...");
         String bodyText = "Denominaciòn y Nombres :" + " " + email.getNames()
                 + " ." + " " + "Presione este link para Activar su cuenta : " + " " + email.getUrl();
         String subject = "Bienvenido a Bolsa de Trabajo CUVL-UTN 2021";
@@ -61,7 +55,7 @@ public class EmailGoogleServiceImpl implements EmailGoogleService {
     @Override
     public void createEmailJobOfferPublicated(JobOffer jobOffer, Publisher publisher) {
         ResponseEmailDto email = emailMapper.toModelEmailJobOffer(jobOffer, publisher, PUBLICATED, DAY);
-        logger.info("Construyendo el cuerpo para enviar el Mail al Publicador del aviso...");
+        LOGGER.info("Construyendo el cuerpo para enviar el Mail al Publicador del aviso...");
         String bodyText = "Denominaciòn y Nombres :" + " " + email.getNames()
                 + " ." + " " + "Se ha publicado su aviso con el Tìtulo : " + " " + jobOffer.getTitle() + " " +
                 " y la Descripciòn : " + " " + jobOffer.getDescription() + " .";
@@ -72,7 +66,7 @@ public class EmailGoogleServiceImpl implements EmailGoogleService {
     @Override
     public void createEmailPostulate(JobOffer jobOffer, Applicant applicant) {
         ResponseEmailDto emailApplicant = emailMapper.toModelEmailPostulateApplicantJobOffer(jobOffer, applicant, POSTULATE, DAY);
-        logger.info("Construyendo el cuerpo para enviar el Mail al Postulante sobre el aviso que se aplico...");
+        LOGGER.info("Construyendo el cuerpo para enviar el Mail al Postulante sobre el aviso que se aplico...");
         String bodyText = "Denominaciòn y Nombres :" + " " + emailApplicant.getNames()
                 + " ." + " " + "Se ha postulado al aviso con el Tìtulo : " + " " + jobOffer.getTitle() + " " +
                 " y la Descripciòn : " + " " + jobOffer.getDescription() + " .";
@@ -80,7 +74,7 @@ public class EmailGoogleServiceImpl implements EmailGoogleService {
         sendEmail(emailApplicant, bodyText, subject);
 
         ResponseEmailDto emailPublisher = emailMapper.toModelEmailPostulatedJobOfferByPublisher(jobOffer, applicant, APPLICANT_POSTULATE, DAY);
-        logger.info("Construyendo el cuerpo para enviar el Mail al Publicador del aviso que se han postulado...");
+        LOGGER.info("Construyendo el cuerpo para enviar el Mail al Publicador del aviso que se han postulado...");
         String bodyTextJob = "Denominaciòn y Nombres :" + " " + emailPublisher.getNames()
                 + " ." + " " + "Se han postulado a su Aviso con el Tìtulo : " + " " + jobOffer.getTitle() + " " +
                 " y la Descripciòn : " + " " + jobOffer.getDescription() + " .";
@@ -104,9 +98,9 @@ public class EmailGoogleServiceImpl implements EmailGoogleService {
             helper.setText(body, true);
             helper.setSubject(subject);
             sender.send(message);
-            logger.info("Mail enviado!");
+            LOGGER.info("Mail enviado!");
         } catch (MessagingException e) {
-            logger.error("Hubo un error al enviar el mail.");
+            LOGGER.error("Hubo un error al enviar el mail.");
         }
     }
 

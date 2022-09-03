@@ -1,13 +1,9 @@
 package com.utn.bolsadetrabajo.dto.request;
 
-import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.model.enums.TypeModality;
 import com.utn.bolsadetrabajo.model.enums.TypePosition;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;

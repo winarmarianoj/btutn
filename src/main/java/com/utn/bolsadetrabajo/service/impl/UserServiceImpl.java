@@ -12,6 +12,8 @@ import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.filter.JwtRequestFilter;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.interfaces.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserRepository repository;
     private ParametersRepository parametersRepository;
@@ -65,6 +68,7 @@ public class UserServiceImpl implements UserService {
         try{
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(userMapper.toUserResponseDto(user, messageSource.getMessage("user.get.success", new Object[] {id}, null)));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("user.get.failure " + e.getMessage(),new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("user.get.failure",new Object[] {id}, null));
         }
     }
@@ -93,6 +97,7 @@ public class UserServiceImpl implements UserService {
             }
             return ResponseEntity.status(HttpStatus.OK).body(CollectionModel.of(page, links));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("user.all.users.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("user.all.users.failed",null, null));
         }
     }
@@ -107,6 +112,7 @@ public class UserServiceImpl implements UserService {
             }
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(messageSource.getMessage("user.activate.success", null,null));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("user.activate.failed " + e.getMessage(), new Object[] {username}, null));
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(messageSource.getMessage("user.activate.failed", new Object[] {username}, null));
         }
     }

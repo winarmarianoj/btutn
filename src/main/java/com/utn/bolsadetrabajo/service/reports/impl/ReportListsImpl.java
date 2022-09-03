@@ -11,7 +11,10 @@ import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.service.crud.Readable;
+import com.utn.bolsadetrabajo.service.impl.UserServiceImpl;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class ReportListsImpl implements ReportLists {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportListsImpl.class);
 
     @Autowired private ParametersRepository parametersRepository;
     @Autowired private JobOfferRepository jobOfferRepository;
@@ -57,6 +61,8 @@ public class ReportListsImpl implements ReportLists {
             List<Link> links = getJobOfferAllLinks(numberPage, page);
             return ResponseEntity.status(HttpStatus.OK).body(CollectionModel.of(page, links));
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),
+                    null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(messageSource.getMessage("joboffer.all.joboffer.failed",
                             null, null));
@@ -69,6 +75,7 @@ public class ReportListsImpl implements ReportLists {
             List<JobOffer> jobOffers = jobOfferRepository.findAllByState(state);
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferListSimplePublisher(jobOffers));
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.all.joboffer.failed",null, null));
         }
     }
@@ -79,6 +86,7 @@ public class ReportListsImpl implements ReportLists {
             Applicant applicant = readableService.getPersonTypeApplicantByIdUser(id);
             return getResponseEntity(applicant.getJobApplications());
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("jobapplicant.all.applicant.failed " + e.getMessage(), null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed", null, null));
         }
     }
@@ -88,6 +96,7 @@ public class ReportListsImpl implements ReportLists {
         try {
             return getResponseEntity(jobOfferRepository.findById(id).get().getJobApplications());
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("jobapplicant.all.applicant.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed",null, null));
         }
     }
@@ -98,6 +107,7 @@ public class ReportListsImpl implements ReportLists {
             List<JobOffer> jobOffers = readableService.getPersonTypePublisherByIdUser(id).getJobOfferList();
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferList(jobOffers));
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("publisehr.all.joboffer.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisehr.all.joboffer.failed",null, null));
         }
     }
@@ -108,6 +118,7 @@ public class ReportListsImpl implements ReportLists {
             List<JobOffer> jobOffers = readableService.getPersonTypePublisherByIdUser(id).getJobOfferList();
             return ResponseEntity.status(HttpStatus.OK).body(jobOfferMapper.toJobOfferListSimplePublisherByFilter(jobOffers, filter));
         } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("publisehr.all.joboffer.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisehr.all.joboffer.failed",null, null));
         }
     }

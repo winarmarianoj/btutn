@@ -13,6 +13,8 @@ import com.utn.bolsadetrabajo.repository.PublisherRepository;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Service
 public class PublisherServiceImpl implements PublisherService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublisherServiceImpl.class);
 
     @Autowired PublisherRepository repository;
     @Autowired ParametersRepository parametersRepository;
@@ -37,6 +40,7 @@ public class PublisherServiceImpl implements PublisherService {
             Publisher publisher = repository.findById(person.getId()).get();
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("publisher.search.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {id}, null));
         }
     }
@@ -59,6 +63,7 @@ public class PublisherServiceImpl implements PublisherService {
             repository.save(publisher);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("publisher.deleted.success", null,null));
         }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("publisher.deleted.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.deleted.failed", new Object[] {id}, null));
         }
     }
@@ -91,6 +96,7 @@ public class PublisherServiceImpl implements PublisherService {
             Publisher aux = repository.save(newPublisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(aux, messageSource.getMessage("publisher.update.success", null,null)));
         }catch (PersonException e){
+            LOGGER.error(messageSource.getMessage("publisher.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.update.failed",new Object[] {e.getMessage()}, null));
         }
     }
@@ -103,6 +109,7 @@ public class PublisherServiceImpl implements PublisherService {
             emailGoogleService.createEmailPerson(publisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(publisher, messageSource.getMessage("publisher.created.success", null,null)));
         }catch (PersonException e){
+            LOGGER.error(messageSource.getMessage("publisher.created.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("publisher.created.failed",new Object[] {e.getMessage()}, null));
         }
     }

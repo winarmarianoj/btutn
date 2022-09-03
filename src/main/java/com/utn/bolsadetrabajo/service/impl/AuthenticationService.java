@@ -7,6 +7,8 @@ import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponse;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService implements com.utn.bolsadetrabajo.service.interfaces.AuthenticationService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
     private AuthenticationManager authenticationManager;
     private JwtUtilService jwtTokenUtil;
@@ -44,13 +47,12 @@ public class AuthenticationService implements com.utn.bolsadetrabajo.service.int
                         new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                                 authenticationRequest.getPassword()));
             }
-        }
-        catch (BadCredentialsException e) {
+        }catch (BadCredentialsException e) {
+            LOGGER.error(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(),
+                    new Object[] {e}, null));
             throw new BadCredentialsException(messageSource.getMessage("authentication.create.jwt.failed",
                     new Object[] {e}, null));
-        }
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+        }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
         return userMapper.responseLoginUserJason(user, jwt);

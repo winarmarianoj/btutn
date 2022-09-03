@@ -25,4 +25,7 @@
         <addForeignKeyConstraint baseColumnNames="joboffer_id" baseTableName="jobapplication" constraintName="FK_JOBAPPLICATION_ON_JOBOFFERID" referencedColumnNames="id" referencedTableName="joboffer"/>
 
     </changeSet>
+    <changeSet id="1660913473080-1" author="Mariano">
+        <dropUniqueConstraint tableName="jobapplication" constraintName="testUniqueConstraint"/>
+    </changeSet>
 </databaseChangeLog>

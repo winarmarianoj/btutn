@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @RequestMapping("/category")
 public class CategoryController implements Controllers<CategoryDTO>, Messages {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Autowired
     public CategoryController(CategoryService categoryService) {

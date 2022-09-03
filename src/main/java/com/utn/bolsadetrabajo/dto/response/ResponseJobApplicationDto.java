@@ -1,6 +1,5 @@
 package com.utn.bolsadetrabajo.dto.response;
 
-import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.model.enums.TypeModality;
 import com.utn.bolsadetrabajo.model.enums.TypePosition;

@@ -1,7 +1,6 @@
 package com.utn.bolsadetrabajo.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.utn.bolsadetrabajo.model.enums.Roles;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 

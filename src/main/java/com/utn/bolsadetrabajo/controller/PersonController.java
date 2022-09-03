@@ -60,7 +60,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
         return readableService.getByIdUser(id);
     }
 
-    @ApiOperation(value = "${person.update} - Modifica los datos de una persona", response = ResponseEntity.class)
+    @ApiOperation(value = "${person.update} - Modifica o crea una persona", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),

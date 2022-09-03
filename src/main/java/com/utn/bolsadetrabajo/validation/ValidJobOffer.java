@@ -1,6 +1,5 @@
 package com.utn.bolsadetrabajo.validation;
 
-
 import com.utn.bolsadetrabajo.model.JobOffer;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +7,6 @@ import java.util.regex.Pattern;
 
 @Component
 public class ValidJobOffer extends AbstractValidator {
-
-
 
     private String getResponseText(JobOffer jobOffer) {
         String response = "";
@@ -21,6 +18,5 @@ public class ValidJobOffer extends AbstractValidator {
         response = jobOffer.getCategory().getName() != null || !Pattern.matches(REGEX_NAMES, jobOffer.getCategory().getName()) ? "Esta todo OK!" : "La Categoria es incorrecto o invalido";
         return response;
     }
-
 
 }
