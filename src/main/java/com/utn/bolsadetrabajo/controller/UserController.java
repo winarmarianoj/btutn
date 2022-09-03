@@ -15,12 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController implements Messages {
 
-    private UserService service;
-
-    @Autowired
-    public UserController(UserService service) {
-        this.service = service;
-    }
+    @Autowired private UserService service;
 
     @ApiOperation(value = "${user.getUserId} - Devuelve un User por su ID", response = ResponseEntity.class)
     @ApiResponses(value = {
@@ -30,7 +25,7 @@ public class UserController implements Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserId(@PathVariable Long id){
+    public ResponseEntity<?> get(@PathVariable Long id){
         return service.findById(id);
     }
 

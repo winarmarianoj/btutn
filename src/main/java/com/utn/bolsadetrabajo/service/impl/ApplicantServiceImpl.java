@@ -44,11 +44,7 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
-        if(personDTO.getId() != null && personDTO.getId() > ZERO){
-            return updateApplicant(personDTO);
-        }else {
-            return save(personDTO);
-        }
+        return id > 0L ? updateApplicant(id, personDTO) : create(personDTO);
     }
 
     @Override
@@ -67,8 +63,13 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     public ResponseEntity<?> getByIdUserApp(User user) {
-        Applicant applicant = repository.findByUser(user);
-        return sendGetPersonByRequest(applicant, applicant.getId());
+        try{
+            Applicant applicant = repository.findByUser(user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.response.object.success", null,null)));
+        }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("applicant.search.failed " + e.getMessage(), new Object[] {user.getUserId()}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.search.failed", new Object[] {user.getUserId()}, null));
+        }
     }
 
     @Override
@@ -86,9 +87,9 @@ public class ApplicantServiceImpl implements ApplicantService {
         return repository.findByUser(user);
     }
 
-    public ResponseEntity<?> updateApplicant(PersonDTO applicantDTO) {
+    public ResponseEntity<?> updateApplicant(Long id, PersonDTO applicantDTO) {
         try{
-            Applicant newApplicant = applicantMapper.toUpdate(getApplicant(applicantDTO.getId()), applicantDTO);
+            Applicant newApplicant = applicantMapper.toUpdate(getApplicant(id), applicantDTO);
             validator.validPerson(newApplicant);
             Applicant aux = repository.save(newApplicant);
             return ResponseEntity.status(HttpStatus.OK).body(applicantMapper.toResponseApplicant(aux, messageSource.getMessage("applicant.update.success", null,null)));
@@ -98,7 +99,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
     }
 
-    private ResponseEntity<?> save(PersonDTO applicantDTO) throws PersonException {
+    private ResponseEntity<?> create(PersonDTO applicantDTO) throws PersonException {
         try{
             Applicant app = applicantMapper.toModel(null, applicantDTO);
             validator.validPerson(app);

@@ -4,6 +4,7 @@ import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.PersonMapper;
 import com.utn.bolsadetrabajo.mapper.PublisherMapper;
+import com.utn.bolsadetrabajo.model.Applicant;
 import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
@@ -35,23 +36,8 @@ public class PublisherServiceImpl implements PublisherService {
     @Autowired Validator validator;
 
     @Override
-    public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
-        try{
-            Publisher publisher = repository.findById(person.getId()).get();
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
-        }catch (Exception e){
-            LOGGER.error(messageSource.getMessage("publisher.search.failed " + e.getMessage(), new Object[] {id}, null));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {id}, null));
-        }
-    }
-
-    @Override
     public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
-        if(personDTO.getId() != null && personDTO.getId() > ZERO){
-            return updatePublisher(personDTO);
-        }else {
-            return save(personDTO);
-        }
+        return id > 0L ? updatePublisher(id, personDTO) : create(personDTO);
     }
 
     @Override
@@ -69,9 +55,25 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
+    public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
+        try{
+            Publisher publisher = getPublisher(person.getId());
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
+        }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("publisher.search.failed " + e.getMessage(), new Object[] {id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {id}, null));
+        }
+    }
+
+    @Override
     public ResponseEntity<?> getByIdUserPub(User user) {
-        Publisher publisher = repository.findByUser(user);
-        return sendGetPersonByRequest(publisher, publisher.getId());
+        try{
+            Publisher publisher = repository.findByUser(user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(publisherMapper.toResponsePublisher(publisher, messageSource.getMessage("publisher.response.object.success", null,null)));
+        }catch (Exception e){
+            LOGGER.error(messageSource.getMessage("publisher.search.failed " + e.getMessage(), new Object[] {user.getUserId()}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisher.search.failed", new Object[] {user.getUserId()}, null));
+        }
     }
 
     @Override
@@ -89,9 +91,9 @@ public class PublisherServiceImpl implements PublisherService {
         return repository.findByUser(user);
     }
 
-    private ResponseEntity<?> updatePublisher(PersonDTO publisherDTO) {
+    private ResponseEntity<?> updatePublisher(Long id, PersonDTO publisherDTO) {
         try {
-            Publisher newPublisher = publisherMapper.toUpdate(getPublisher(publisherDTO.getId()), publisherDTO);
+            Publisher newPublisher = publisherMapper.toUpdate(getPublisher(id), publisherDTO);
             validator.validPerson(newPublisher);
             Publisher aux = repository.save(newPublisher);
             return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponsePerson(aux, messageSource.getMessage("publisher.update.success", null,null)));
@@ -101,7 +103,7 @@ public class PublisherServiceImpl implements PublisherService {
         }
     }
 
-    private ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
+    private ResponseEntity<?> create(PersonDTO personDTO) throws PersonException {
         try{
             Publisher newPublisher = publisherMapper.toModel(null, personDTO);
             validator.validPerson(newPublisher);

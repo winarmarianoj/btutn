@@ -57,12 +57,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public ResponseEntity<?> update(Long userIdByPublisher, JobOfferDTO jobOfferDTO) {
-        if(jobOfferDTO.getId() != null && jobOfferDTO.getId() > ZERO){
-            JobOffer jobOffer = getJobOffer(jobOfferDTO.getId());
-            return updateJobOffer(jobOffer, jobOfferDTO);
-        }else {
-            return create(userIdByPublisher, jobOfferDTO);
-        }
+        return jobOfferDTO.getId() > ZERO ? updateJobOffer(jobOfferDTO) : create(userIdByPublisher, jobOfferDTO);
     }
 
     @Override
@@ -123,8 +118,9 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
     }
 
-    private ResponseEntity<?> updateJobOffer(JobOffer jobOffer, JobOfferDTO jobOfferDTO) {
+    private ResponseEntity<?> updateJobOffer(JobOfferDTO jobOfferDTO) {
         try {
+            JobOffer jobOffer = getJobOffer(jobOfferDTO.getId());
             JobOffer newJobOffer = mapper.updateJobOffer(jobOffer, jobOfferDTO);
             validJobOffer.validJobOffer(newJobOffer);
             JobOffer aux = repository.save(newJobOffer);

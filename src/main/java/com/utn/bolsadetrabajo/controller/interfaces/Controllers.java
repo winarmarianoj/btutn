@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 
 public interface Controllers<T> {
-    ResponseEntity<?> getById(@PathVariable Long id);
+    ResponseEntity<?> get(@PathVariable Long id);
     ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid T entity) throws PersonException;
     ResponseEntity<?> delete(@PathVariable Long id);
     ResponseEntity<?> getAll();

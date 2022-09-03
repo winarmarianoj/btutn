@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
 import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
+import com.utn.bolsadetrabajo.controller.interfaces.Creators;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.CategoryDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
@@ -19,14 +20,9 @@ import javax.validation.Valid;
 @RestController
 @Api(value = "Category Controller", description = "Controlador con los endpoints que actúan sobre las Categorias.")
 @RequestMapping("/category")
-public class CategoryController implements Controllers<CategoryDTO>, Messages {
+public class CategoryController implements Controllers<CategoryDTO>, Messages, Creators<CategoryDTO> {
 
-    private final CategoryService categoryService;
-
-    @Autowired
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    @Autowired private CategoryService categoryService;
 
     @Override
     @ApiOperation(value = "${category.getById} - Devuelve una categoria por su ID", response = ResponseEntity.class)
@@ -37,7 +33,7 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id){
+    public ResponseEntity<?> get(@PathVariable Long id){
         return categoryService.getById(id);
     }
 
@@ -65,6 +61,20 @@ public class CategoryController implements Controllers<CategoryDTO>, Messages {
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> delete(@PathVariable Long id){
         return categoryService.delete(id);
+    }
+
+    @Override
+    @ApiOperation(value = "${applicant.create} - Crea una categoria nueva", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> create(@RequestBody @Valid CategoryDTO categoryDTO) throws PersonException {
+        return categoryService.update(0L, categoryDTO);
     }
 
     @Override

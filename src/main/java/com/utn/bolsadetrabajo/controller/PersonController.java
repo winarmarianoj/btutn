@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
 import com.utn.bolsadetrabajo.controller.interfaces.Controllers;
+import com.utn.bolsadetrabajo.controller.interfaces.Creators;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 @RestController
 @Api(value = "Person Controller", description = "Controlador con los endpoints que actúan sobre las Person.")
 @RequestMapping("/person")
-public class PersonController implements Controllers<PersonDTO>, Messages {
+public class PersonController implements Controllers<PersonDTO>, Messages, Creators<PersonDTO> {
 
     @Autowired Readable readableService;
     @Autowired PersonService personService;
@@ -34,7 +35,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id){
+    public ResponseEntity<?> get(@PathVariable Long id){
         return readableService.getById(id);
     }
 
@@ -60,6 +61,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
         return readableService.getByIdUser(id);
     }
 
+    @Override
     @ApiOperation(value = "${person.update} - Modifica o crea una persona", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
@@ -72,6 +74,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
         return personService.update(id, personDTO);
     }
 
+    @Override
     @ApiOperation(value = "${person.delete} - Elimina una persona con Baja lògica", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
@@ -84,6 +87,7 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
         return personService.delete(id);
     }
 
+    @Override
     @ApiOperation(value = "person.getAll - Devuelve La Lista de Todas las Personas", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
@@ -91,7 +95,6 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
     })
-    @Override
     @GetMapping("/")
     public ResponseEntity<?> getAll() {
         return personService.getAll();
@@ -119,6 +122,19 @@ public class PersonController implements Controllers<PersonDTO>, Messages {
     @GetMapping("/publishers")
     public ResponseEntity<?> getAllPublisher(@RequestParam(name = "page",defaultValue = "0") int page) {
         return personService.getAllPublisher(page);
+    }
+
+    @Override
+    @ApiOperation(value = "${person.create} - Crea una Persona nueva", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> create(@RequestBody @Valid PersonDTO personDTO) throws PersonException {
+        return personService.update(0L, personDTO);
     }
 
 }

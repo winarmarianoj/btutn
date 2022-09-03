@@ -47,11 +47,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public ResponseEntity<?> update(Long id, PersonDTO personDTO) throws PersonException {
-        if(personDTO.getId() != null && personDTO.getId() > ZERO){
-            return updatePerson(personDTO);
-        }else {
-            return save(personDTO);
-        }
+        return id > 0L ? updatePerson(id, personDTO) : create(personDTO);
     }
 
     @Override
@@ -85,9 +81,9 @@ public class PersonServiceImpl implements PersonService {
         return repository.findByUser(userService.findByUsername(username));
     }
 
-    private ResponseEntity<?> updatePerson(PersonDTO personDTO) {
+    private ResponseEntity<?> updatePerson(Long id, PersonDTO personDTO) {
         try{
-            Person newPer = mapper.toUpdate(getPerson(personDTO.getId()), personDTO);
+            Person newPer = mapper.toUpdate(getPerson(id), personDTO);
             validator.validPerson(newPer);
             Person aux = repository.save(newPer);
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePerson(aux, messageSource.getMessage("person.update.success", null,null)));
@@ -97,7 +93,7 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
-    private ResponseEntity<?> save(PersonDTO personDTO) throws PersonException {
+    private ResponseEntity<?> create(PersonDTO personDTO) throws PersonException {
         try{
             Person newPerson = mapper.toModel(personDTO);
             validator.validPerson(newPerson);

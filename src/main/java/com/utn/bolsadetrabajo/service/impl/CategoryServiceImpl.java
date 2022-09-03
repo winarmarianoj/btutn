@@ -56,11 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<?> update(Long id, CategoryDTO categoryDTO) {
-        if(categoryDTO.getId() != null && categoryDTO.getId() > ZERO){
-            return updateCategory(categoryDTO);
-        }else {
-            return save(categoryDTO);
-        }
+        return id > 0L ? updateCategory(id, categoryDTO) : create(categoryDTO);
     }
 
     @Override
@@ -99,9 +95,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private ResponseEntity<?> updateCategory(CategoryDTO categoryDTO) {
+    private ResponseEntity<?> updateCategory(Long id, CategoryDTO categoryDTO) {
         try{
-            Category newCategory = categoryMapper.toModelUpdate(getCategory(categoryDTO.getId()), categoryDTO);
+            Category newCategory = categoryMapper.toModelUpdate(getCategory(id), categoryDTO);
             validCategory.validCategory(newCategory);
             Category aux = categoryRepository.save(newCategory);
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.toResponsePerson(aux, messageSource.getMessage("category.update.success", null,null)));
@@ -115,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(id).get();
     }
 
-    private ResponseEntity<?> save(CategoryDTO categoryDTO) {
+    private ResponseEntity<?> create(CategoryDTO categoryDTO) {
         try{
             Category category = categoryMapper.toModel(categoryDTO);
             validCategory.validCategory(category);

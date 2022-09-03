@@ -1,4 +1,5 @@
 package com.utn.bolsadetrabajo.controller;
+import com.utn.bolsadetrabajo.controller.interfaces.Creators;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 @RestController
 @Api(value = "Publisher Controller", description = "Controlador con los endpoints que actúan sobre los Publisher.")
 @RequestMapping("/publisher")
-public class PublisherController implements Messages {
+public class PublisherController implements Messages, Creators<PersonDTO> {
 
     @Autowired PublisherService publisherService;
 
@@ -33,5 +34,17 @@ public class PublisherController implements Messages {
         return publisherService.update(id, publisherDTO);
     }
 
+    @Override
+    @ApiOperation(value = "${publisher.create} - Crea un objeto Publisher", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> create(@RequestBody @Valid PersonDTO publisherDTO) throws PersonException {
+        return publisherService.update(0L, publisherDTO);
+    }
 }
 
