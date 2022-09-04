@@ -10,6 +10,7 @@ import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ApplicantRepository;
 import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
+import com.utn.bolsadetrabajo.util.Errors;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,12 @@ import java.util.List;
 public class ApplicantServiceImpl implements ApplicantService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantServiceImpl.class);
 
-    @Autowired ApplicantRepository repository;
-    @Autowired EmailGoogleService emailGoogleService;
-    @Autowired ApplicantMapper applicantMapper;
-    @Autowired MessageSource messageSource;
-    @Autowired Validator validator;
+    @Autowired private ApplicantRepository repository;
+    @Autowired private EmailGoogleService emailGoogleService;
+    @Autowired private ApplicantMapper applicantMapper;
+    @Autowired private MessageSource messageSource;
+    @Autowired private Validator validator;
+    @Autowired private Errors errors;
 
     @Override
     public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id){
@@ -38,6 +40,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.response.object.success", null,null)));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("applicant.search.failed " + e.getMessage(), new Object[] {id}, null));
+            errors.logError(messageSource.getMessage("applicant.search.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.search.failed", new Object[] {id}, null));
         }
     }
@@ -57,6 +60,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.deleted.success", null,null));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("applicant.deleted.failed " + e.getMessage(), new Object[] {id}, null));
+            errors.logError(messageSource.getMessage("applicant.deleted.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.deleted.failed", new Object[] {id}, null));
         }
     }
@@ -68,6 +72,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.response.object.success", null,null)));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("applicant.search.failed " + e.getMessage(), new Object[] {user.getUserId()}, null));
+            errors.logError(messageSource.getMessage("applicant.search.failed " + e.getMessage(), new Object[] {user.getUserId()}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.search.failed", new Object[] {user.getUserId()}, null));
         }
     }
@@ -95,6 +100,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.OK).body(applicantMapper.toResponseApplicant(aux, messageSource.getMessage("applicant.update.success", null,null)));
         }catch (PersonException e){
             LOGGER.error(messageSource.getMessage("applicant.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
+            errors.logError(messageSource.getMessage("applicant.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("applicant.update.failed",new Object[] {e.getMessage()}, null));
         }
     }
@@ -108,6 +114,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             return ResponseEntity.status(HttpStatus.CREATED).body(applicantMapper.toResponseApplicant(applicant, messageSource.getMessage("applicant.created.success", null,null)));
         }catch (PersonException e){
             LOGGER.error(messageSource.getMessage("applicant.created.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
+            errors.logError(messageSource.getMessage("applicant.created.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.created.failed",new Object[] {e.getMessage()}, null));
         }
     }

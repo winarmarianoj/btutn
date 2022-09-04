@@ -9,6 +9,7 @@ import com.utn.bolsadetrabajo.repository.PersonRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.reports.GenerateListTypePerson;
+import com.utn.bolsadetrabajo.util.Errors;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +25,16 @@ import java.util.List;
 public class PersonServiceImpl implements PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
-    @Autowired PersonRepository repository;
-    @Autowired EmailGoogleService emailGoogleService;
-    @Autowired PersonMapper mapper;
-    @Autowired MessageSource messageSource;
-    @Autowired UserService userService;
-    @Autowired Validator validator;
-    @Autowired GenerateListTypePerson generateListTypePerson;
-    @Autowired PublisherService publisherService;
-    @Autowired ApplicantService applicantService;
+    @Autowired private PersonRepository repository;
+    @Autowired private EmailGoogleService emailGoogleService;
+    @Autowired private PersonMapper mapper;
+    @Autowired private MessageSource messageSource;
+    @Autowired private UserService userService;
+    @Autowired private Validator validator;
+    @Autowired private GenerateListTypePerson generateListTypePerson;
+    @Autowired private PublisherService publisherService;
+    @Autowired private ApplicantService applicantService;
+    @Autowired private Errors errors;
 
     @Override
     public ResponseEntity<?> sendGetPersonByRequest(Person person, Long id) {
@@ -41,6 +43,7 @@ public class PersonServiceImpl implements PersonService {
                     mapper.toResponsePerson(person, messageSource.getMessage("person.response.object.success", null,null)));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("person.search.failed " + e.getMessage(), new Object[] {id}, null));
+            errors.logError(messageSource.getMessage("person.search.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.search.failed", new Object[] {id}, null));
         }
     }
@@ -57,6 +60,7 @@ public class PersonServiceImpl implements PersonService {
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("person.deleted.failed " + e.getMessage(), new Object[] {id}, null));
+            errors.logError(messageSource.getMessage("person.deleted.failed " + e.getMessage(), new Object[] {id}, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.deleted.failed", new Object[] {id}, null));
         }
     }
@@ -89,6 +93,7 @@ public class PersonServiceImpl implements PersonService {
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePerson(aux, messageSource.getMessage("person.update.success", null,null)));
         }catch (PersonException e){
             LOGGER.error(messageSource.getMessage("person.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
+            errors.logError(messageSource.getMessage("person.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("person.update.failed",new Object[] {e.getMessage()}, null));
         }
     }
@@ -102,6 +107,7 @@ public class PersonServiceImpl implements PersonService {
             return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponsePerson(person, messageSource.getMessage("person.created.success", null,null)));
         }catch (PersonException e){
             LOGGER.error(messageSource.getMessage("person.create.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
+            errors.logError(messageSource.getMessage("person.create.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("person.create.failed",new Object[] {e.getMessage()}, null));
         }
     }
@@ -111,6 +117,7 @@ public class PersonServiceImpl implements PersonService {
             return ResponseEntity.status(HttpStatus.OK).body(lists);
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("person.all.failed " + e.getMessage(),null, null));
+            errors.logError(messageSource.getMessage("person.all.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("person.all.failed",null, null));
         }
     }

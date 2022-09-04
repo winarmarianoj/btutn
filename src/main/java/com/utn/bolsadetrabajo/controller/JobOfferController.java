@@ -74,7 +74,7 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     })
     @PostMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createJob(@PathVariable Long id, @RequestBody @Valid JobOfferDTO jobOfferDTO) throws PersonException {
-        return jobOfferService.update(id, jobOfferDTO);
+        return jobOfferService.create(id, jobOfferDTO);
     }
 
     @Override

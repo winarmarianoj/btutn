@@ -1,11 +1,14 @@
 package com.utn.bolsadetrabajo.validation;
 
+import com.utn.bolsadetrabajo.dto.request.ForgotDTO;
 import com.utn.bolsadetrabajo.exception.CategoryException;
 import com.utn.bolsadetrabajo.exception.JobOfferException;
 import com.utn.bolsadetrabajo.exception.PersonException;
+import com.utn.bolsadetrabajo.exception.UserException;
 import com.utn.bolsadetrabajo.model.Category;
 import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.Person;
+import com.utn.bolsadetrabajo.model.User;
 
 public abstract class AbstractValidator {
     protected static final String REGEX_NAMES = "^([A-Za-zñÑ])+g+$";
@@ -15,4 +18,5 @@ public abstract class AbstractValidator {
     public boolean validPerson(Person per) throws PersonException {return false;}
     public boolean validJobOffer(JobOffer jobOffer) throws JobOfferException {return false;}
     public boolean validCategory(Category category) throws CategoryException {return false;}
+    public boolean isValidForgot(User user, ForgotDTO forgotDTO) throws UserException {return false;};
 }

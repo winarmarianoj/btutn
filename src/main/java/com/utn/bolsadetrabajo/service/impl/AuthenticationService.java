@@ -7,10 +7,13 @@ import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponse;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
+import com.utn.bolsadetrabajo.util.Errors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,41 +24,31 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService implements com.utn.bolsadetrabajo.service.interfaces.AuthenticationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
-    private AuthenticationManager authenticationManager;
-    private JwtUtilService jwtTokenUtil;
-    private UserDetailsServiceImpl userDetailsService;
-    private MessageSource messageSource;
-    private UserRepository userRepository;
-    private UserMapper userMapper;
-
-    @Autowired
-    public AuthenticationService(AuthenticationManager authenticationManager, JwtUtilService jwtTokenUtil, UserDetailsServiceImpl userDetailsService, MessageSource messageSource, UserRepository userRepository, UserMapper userMapper) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userDetailsService = userDetailsService;
-        this.messageSource = messageSource;
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
+    @Autowired private AuthenticationManager authenticationManager;
+    @Autowired private JwtUtilService jwtTokenUtil;
+    @Autowired private UserDetailsServiceImpl userDetailsService;
+    @Autowired private MessageSource messageSource;
+    @Autowired private UserRepository userRepository;
+    @Autowired private UserMapper userMapper;
+    @Autowired private Errors errors;
 
     @Override
-    public AuthenticationResponse createJwt(AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createJwt(AuthenticationRequest authenticationRequest) throws Exception {
         User user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
         try {
             if (user.getState().equals(State.ACTIVE)){
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-                                authenticationRequest.getPassword()));
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             }
         }catch (BadCredentialsException e) {
-            LOGGER.error(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(),
-                    new Object[] {e}, null));
-            throw new BadCredentialsException(messageSource.getMessage("authentication.create.jwt.failed",
-                    new Object[] {e}, null));
+            LOGGER.error(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(), new Object[] {e}, null));
+            errors.logError(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(), new Object[] {e}, null));
+            //throw new BadCredentialsException(messageSource.getMessage("authentication.create.jwt.failed", new Object[] {e}, null));
+
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("authentication.create.jwt.failed", new Object[] {authenticationRequest.getUsername()}, null));
         }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
-        return userMapper.responseLoginUserJason(user, jwt);
+        return ResponseEntity.status(HttpStatus.OK).body(userMapper.responseLoginUserJason(user, jwt));
     }
 
 }
