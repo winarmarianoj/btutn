@@ -11,5 +11,4 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class ResponseSearchCategoryDto {
     private String name;
-    private String description;
 }

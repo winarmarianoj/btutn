@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
-import com.utn.bolsadetrabajo.service.ReportService;
+import com.utn.bolsadetrabajo.controller.interfaces.Messages;
+import com.utn.bolsadetrabajo.service.reports.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -14,12 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.utn.bolsadetrabajo.controller.interfaces.Controllers.*;
-
 @RestController
 @Api(value = "Report Controller", description = "Controlador con los endpoints que actúan sobre los Report.")
 @RequestMapping("/reports")
-public class ReportController {
+public class ReportController implements Messages {
     @Autowired
     ReportService reportService;
 

@@ -6,7 +6,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.CategoryRepository;
-import com.utn.bolsadetrabajo.service.EmailService;
+import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -16,17 +16,17 @@ import java.util.List;
 @Component
 public class JobOfferMapper {
 
-    private CategoryRepository categoryRepository;
-    private EmailService emailService;
+    private final CategoryRepository categoryRepository;
+    private final EmailGoogleService emailGoogleService;
 
-    public JobOfferMapper(CategoryRepository categoryRepository, EmailService emailService) {
+    public JobOfferMapper(CategoryRepository categoryRepository, EmailGoogleService emailGoogleService) {
         this.categoryRepository = categoryRepository;
-        this.emailService = emailService;
+        this.emailGoogleService = emailGoogleService;
     }
 
     public JobOffer toModel(JobOfferDTO dto, Publisher publisher) {
         Category category = categoryRepository.findByName(dto.getCategory());
-        JobOffer jobOffer = JobOffer.builder()
+        JobOffer job = JobOffer.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .body(dto.getBody())
@@ -41,17 +41,19 @@ public class JobOfferMapper {
                 .publisher(publisher)
                 .category(category)
                 .build();
-        return jobOffer;
+        return job;
     }
 
     public ResponseJobOfferDto toResponsePublisherJobOffer(JobOffer jobOffer, String message) {
-        ResponseJobOfferDto job = ResponseJobOfferDto.builder()
+        ResponseJobOfferDto dto = ResponseJobOfferDto.builder()
                 .id(jobOffer.getId())
                 .title(jobOffer.getTitle())
                 .description(jobOffer.getDescription())
                 .body(jobOffer.getBody())
                 .area(jobOffer.getArea())
                 .datePublished(jobOffer.getCreateDay())
+                .modifiedDay(jobOffer.getModifiedDay())
+                .deletedDay(jobOffer.getDeletedDay())
                 .experience(jobOffer.getExperience())
                 .modality(jobOffer.getModality())
                 .position(jobOffer.getPosition())
@@ -59,7 +61,7 @@ public class JobOfferMapper {
                 .category(jobOffer.getCategory().getName())
                 .message(message)
                 .build();
-        return job;
+        return dto;
     }
 
     public JobOffer updateJobOffer(JobOffer jobOffer, JobOfferDTO dto) {
@@ -78,31 +80,29 @@ public class JobOfferMapper {
     }
 
     public JobApplication toModelJobApplication(Applicant applicant, JobOffer jobOffer) {
-        JobApplication job = JobApplication.builder()
+        JobApplication jobApplication = JobApplication.builder()
                 .applicant(applicant)
                 .jobOffer(jobOffer)
                 .applied(LocalDate.now())
                 .deleted(false)
                 .build();
-        return job;
+        return jobApplication;
     }
 
     public List<ResponseJobOfferDto> toJobOfferList(List<JobOffer> jobOffers) {
-        ResponseJobOfferDto res;
         List<ResponseJobOfferDto> list = new ArrayList<>();
         for(JobOffer job : jobOffers){
-            res = toResponsePublisherJobOffer(job, " ");
+            ResponseJobOfferDto res = toResponsePublisherJobOffer(job, " ");
             list.add(res);
         }
         return list;
     }
 
     public List<ResponseJobOfferDto> toPendingJobOfferList(List<JobOffer> jobOffers) {
-        ResponseJobOfferDto res;
         List<ResponseJobOfferDto> list = new ArrayList<>();
         for(JobOffer job : jobOffers){
             if(job.getState().equals(State.PENDING)){
-                res = toResponsePublisherJobOffer(job, " ");
+                ResponseJobOfferDto res = toResponsePublisherJobOffer(job, " ");
                 list.add(res);
             }
         }
@@ -110,37 +110,35 @@ public class JobOfferMapper {
     }
 
     public JobOffer modifyJobOffer(JobOffer jobOffer, JobOfferEvaluationDTO dto){
-        if(dto.getDecision().equals("APPROVED")){
+        if(dto.getDecision().equals((State.APPROVED).toString())){
             jobOffer.setState(State.PUBLISHED);
-        }else if(dto.getDecision().equals("REJECTED")){
+        }else if(dto.getDecision().equals((State.REJECTED).toString())){
             jobOffer.setState(State.REJECTED);
         }else {
             jobOffer.setState(State.REVIEW);
-            emailService.sendEmailPublisherJobOfferReview(jobOffer);
         }
         return jobOffer;
     }
 
     public List<ResponseJobOfferDto> toJobOfferListSimplePublisher(List<JobOffer> jobOffers) {
-        ResponseJobOfferDto res;
         List<ResponseJobOfferDto> list = new ArrayList<>();
         for(JobOffer job : jobOffers){
-            res = toResponsePublisherJobOffer(job, " ");
+            ResponseJobOfferDto res = toResponsePublisherJobOffer(job, " ");
             list.add(res);
         }
         return list;
     }
 
     public List<ResponseJobOfferDto> toJobOfferListSimplePublisherByFilter(List<JobOffer> jobOffers, Category filter) {
-        ResponseJobOfferDto res;
         List<ResponseJobOfferDto> list = new ArrayList<>();
         Category category = categoryRepository.findByName(filter.getName());
         for(JobOffer job : jobOffers){
             if(job.getCategory().getName().equals(category.getName())){
-                res = toResponsePublisherJobOffer(job, " ");
+                ResponseJobOfferDto res = toResponsePublisherJobOffer(job, " ");
                 list.add(res);
             }
         }
         return list;
     }
+
 }

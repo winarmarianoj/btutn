@@ -1,11 +1,14 @@
 package com.utn.bolsadetrabajo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -14,6 +17,8 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 public class PersonDTO {
+
+    private Long id;
 
     @NotNull(message = "Nombre no puede estar vacìo.")
     @Size(min = 4, max = 64, message = "El Nombre debe tener un tamaño entre 4 a 64 caracteres.")
@@ -24,8 +29,8 @@ public class PersonDTO {
     private String surname;
 
     @NotNull(message = "El campo DNI es obligatorio")
-    @Size(min = 7, max = 15, message = "DNI debe tener un tamaño entre 7 a 15 caracteres.")
-    private String dni;
+    @Size(min = 7, max = 12, message = "DNI debe tener un tamaño entre 7 a 15 caracteres.")
+    private String identification;
 
     @NotNull(message = "Email no puede estar vacìo")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
@@ -42,4 +47,21 @@ public class PersonDTO {
     @NotNull(message = "Telèfono no puede estar vacìo")
     @Size(min = 8, max = 20, message = "Invalid phone number")
     private String phoneNumber;
+
+    //@NotNull(message = "Su Rol no puede estar vacìo")
+    private String role;
+
+    //@NotNull(message = "Gènero no puede estar vacìo")
+    private String genre;
+
+    //@NotNull(message = "Fecha de Cumpleaños no puede estar vacìo")
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    private LocalDate birthDate;
+
+    //@NotNull(message = "Tipo de Estudiante no puede estar vacìo")
+    private String typeStudent;
+
+    //@NotNull(message = "URL no puede estar vacìo.")
+    @URL()
+    private String webPage;
 }

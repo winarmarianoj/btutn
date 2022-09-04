@@ -1,12 +1,11 @@
 package com.utn.bolsadetrabajo.validation;
 
+import com.utn.bolsadetrabajo.dto.request.ForgotDTO;
 import com.utn.bolsadetrabajo.exception.CategoryException;
 import com.utn.bolsadetrabajo.exception.JobOfferException;
 import com.utn.bolsadetrabajo.exception.PersonException;
-import com.utn.bolsadetrabajo.model.Applicant;
-import com.utn.bolsadetrabajo.model.Category;
-import com.utn.bolsadetrabajo.model.JobOffer;
-import com.utn.bolsadetrabajo.model.Person;
+import com.utn.bolsadetrabajo.exception.UserException;
+import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -37,6 +36,15 @@ public class Validator extends AbstractValidator {
         if(!dto.isResult()){throw new CategoryException(dto.getResponse());}
 
         return dto.isResult();
+    }
+
+    @Override
+    public boolean isValidForgot(User user, ForgotDTO forgotDTO) throws UserException {
+        if(!user.getUsername().equals(forgotDTO.getUsername())) throw new UserException("El Username o email no es el correcto con el dato en BD.");
+
+        if(!forgotDTO.getFirstPassword().equals(forgotDTO.getSecondPassword())) throw new UserException("El primer Password no es igual al segundo.");
+
+        return true;
     }
 
     public boolean validJobOffer(JobOffer jobOffer) throws JobOfferException {

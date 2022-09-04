@@ -1,7 +1,7 @@
-package com.utn.bolsadetrabajo.service.impl;
+package com.utn.bolsadetrabajo.service.reports.impl;
 
-import com.utn.bolsadetrabajo.service.ReportService;
-import com.utn.bolsadetrabajo.util.reports.ApplicantReport;
+import com.utn.bolsadetrabajo.service.reports.ReportService;
+import com.utn.bolsadetrabajo.service.reports.impl.ApplicantReportImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +11,11 @@ import java.io.IOException;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    private ApplicantReport applicantReport;
+    private ApplicantReportImpl applicantReportImpl;
 
     @Autowired
-    public ReportServiceImpl(ApplicantReport applicantReport) {
-        this.applicantReport = applicantReport;
+    public ReportServiceImpl(ApplicantReportImpl applicantReportImpl) {
+        this.applicantReportImpl = applicantReportImpl;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ReportServiceImpl implements ReportService {
         String headervalue = "attachment; filename=Applicant_info.xlsx";
 
         response.setHeader(headerKey, headervalue);
-        applicantReport.export(response);
+        applicantReportImpl.export(response);
     }
 
 }

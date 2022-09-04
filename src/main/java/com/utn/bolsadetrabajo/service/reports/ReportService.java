@@ -1,4 +1,4 @@
-package com.utn.bolsadetrabajo.service;
+package com.utn.bolsadetrabajo.service.reports;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

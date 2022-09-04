@@ -1,5 +1,6 @@
 package com.utn.bolsadetrabajo.mapper;
 
+import com.utn.bolsadetrabajo.dto.request.ForgotDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseUserDto;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.model.Role;
