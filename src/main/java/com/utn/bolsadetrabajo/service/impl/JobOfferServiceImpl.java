@@ -60,8 +60,16 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public ResponseEntity<?> update(Long userIdByPublisher, JobOfferDTO jobOfferDTO) {
-        try {
+        if(jobOfferDTO.getId() != null && jobOfferDTO.getId() > ZERO){
             JobOffer jobOffer = getJobOffer(jobOfferDTO.getId());
+            return updateJobOffer(jobOffer, jobOfferDTO);
+        }else {
+            return create(userIdByPublisher, jobOfferDTO);
+        }
+    }
+
+    public ResponseEntity<?> updateJobOffer(JobOffer jobOffer, JobOfferDTO jobOfferDTO) {
+        try {
             JobOffer newJobOffer = mapper.updateJobOffer(jobOffer, jobOfferDTO);
             validJobOffer.validJobOffer(newJobOffer);
             JobOffer aux = repository.save(newJobOffer);
@@ -109,7 +117,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     public ResponseEntity<?> getAll() {
         try {
-            List<JobOffer> jobOffers = repository.findAll();
+            List<JobOffer> jobOffers = repository.findAllByState("PUBLISHED");
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toJobOfferListSimplePublisher(jobOffers));
         } catch (Exception e) {
             LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
