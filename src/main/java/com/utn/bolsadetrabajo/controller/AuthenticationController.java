@@ -4,6 +4,7 @@ import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.ForgotDTO;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.service.interfaces.AuthenticationService;
+import com.utn.bolsadetrabajo.service.interfaces.FlutterService;
 import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +24,7 @@ public class AuthenticationController implements Messages {
 
     @Autowired private AuthenticationService authenticationService;
     @Autowired private UserService userService;
+    @Autowired private FlutterService flutterService;
 
     @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
     @ApiResponses(value = {
@@ -34,6 +36,18 @@ public class AuthenticationController implements Messages {
     @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         return authenticationService.createJwt(authenticationRequest);
+    }
+
+    @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+    })
+    @PostMapping(value = "/loginflutter", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> createAuthenticationTokenByFlutter(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        return flutterService.createJwtByFlutter(authenticationRequest);
     }
 
     @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
