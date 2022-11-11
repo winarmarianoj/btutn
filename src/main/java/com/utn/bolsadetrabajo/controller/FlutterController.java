@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Api(value = "JobOffer Controller", description = "Controlador con los endpoints que actúan sobre los JobOffer.")
-@RequestMapping("/flutter/reports")
+@RequestMapping("/flutter")
 public class FlutterController {
 
     @Autowired FlutterService flutterService;
@@ -24,5 +24,16 @@ public class FlutterController {
         return flutterService.getJobApplicantAllByApplicantByFlutter(id);
     }
 
+    @ApiOperation(value = "report-lists.getAllJobOfferByPublisher - Publisher: quiere ver todos sus avisos. El ID del publicador", response = ResponseEntity.class)
+    @GetMapping(path = "/publisher/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getJobOfferAllByPublisher(@PathVariable Long id) {
+        return flutterService.getJobOfferAllByPublisher(id);
+    }
+
+    @ApiOperation(value = "report-lists.getJobApplicantAllByJobOfferSimplePublisher - Publisher: Ver quien se aplico en cada aviso. El Id es el del aviso a consultar", response = ResponseEntity.class)
+    @GetMapping(value = "/jobapplicants-by-my-offers/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getAllAppliedByJobOffer(@PathVariable Long id){
+        return flutterService.getAllAppliedByJobOffer(id);
+    }
 
 }

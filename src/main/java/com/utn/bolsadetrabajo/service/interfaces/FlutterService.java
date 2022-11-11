@@ -8,4 +8,8 @@ public interface FlutterService {
     ResponseEntity<?> createJwtByFlutter(AuthenticationRequest authenticationRequest);
 
     ResponseEntity<?> getJobApplicantAllByApplicantByFlutter(Long id);
+
+    ResponseEntity<?> getJobOfferAllByPublisher(Long id);
+
+    ResponseEntity<?> getAllAppliedByJobOffer(Long id);
 }

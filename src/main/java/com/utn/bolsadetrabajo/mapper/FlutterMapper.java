@@ -1,7 +1,9 @@
 package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.response.ResponseJobApplicationFlutterDto;
+import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferFlutterDto;
 import com.utn.bolsadetrabajo.model.JobApplication;
+import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponseByFlutter;
 import org.springframework.stereotype.Component;
@@ -53,5 +55,34 @@ public class FlutterMapper {
             list.add(res);
         }
         return list;
+    }
+
+    public List<ResponseJobOfferFlutterDto> toJobOfferList(List<JobOffer> jobOffers) {
+        List<ResponseJobOfferFlutterDto> list = new ArrayList<>();
+        for(JobOffer job : jobOffers){
+            ResponseJobOfferFlutterDto res = toResponsePublisherJobOffer(job, " ");
+            list.add(res);
+        }
+        return list;
+    }
+
+    public ResponseJobOfferFlutterDto toResponsePublisherJobOffer(JobOffer jobOffer, String message) {
+        ResponseJobOfferFlutterDto dto = ResponseJobOfferFlutterDto.builder()
+                .id(jobOffer.getId())
+                .title(jobOffer.getTitle())
+                .description(jobOffer.getDescription())
+                .body(jobOffer.getBody())
+                .area(jobOffer.getArea())
+                .datePublished(String.valueOf(jobOffer.getCreateDay()))
+                .modifiedDay(String.valueOf(jobOffer.getModifiedDay()))
+                .deletedDay(String.valueOf(jobOffer.getDeletedDay()))
+                .experience(jobOffer.getExperience())
+                .modality(String.valueOf(jobOffer.getModality()))
+                .position(String.valueOf(jobOffer.getPosition()))
+                .state(String.valueOf(jobOffer.getState()))
+                .category(jobOffer.getCategory().getName())
+                .message(message)
+                .build();
+        return dto;
     }
 }

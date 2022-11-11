@@ -2,8 +2,11 @@ package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.mapper.FlutterMapper;
 import com.utn.bolsadetrabajo.model.Applicant;
+import com.utn.bolsadetrabajo.model.JobApplication;
+import com.utn.bolsadetrabajo.model.JobOffer;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
+import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
@@ -22,6 +25,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FlutterServiceImpl implements FlutterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
@@ -33,6 +38,7 @@ public class FlutterServiceImpl implements FlutterService {
     @Autowired private UserRepository userRepository;
     @Autowired private FlutterMapper flutterMapper;
     @Autowired private Readable readableService;
+    @Autowired private JobOfferRepository jobOfferRepository;
     @Autowired private Errors errors;
 
     @Override
@@ -56,11 +62,36 @@ public class FlutterServiceImpl implements FlutterService {
     public ResponseEntity<?> getJobApplicantAllByApplicantByFlutter(Long id) {
         try {
             Applicant applicant = readableService.getPersonTypeApplicantByIdUser(id);
-            return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(applicant.getJobApplications()));
+            return getResponseEntity(applicant.getJobApplications());
         } catch (Exception e) {
             LOGGER.error(messageSource.getMessage("jobapplicant.all.applicant.failed " + e.getMessage(), null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed", null, null));
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getJobOfferAllByPublisher(Long id) {
+        try {
+            List<JobOffer> jobOffers = readableService.getPersonTypePublisherByIdUser(id).getJobOfferList();
+            return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toJobOfferList(jobOffers));
+        } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("publisehr.all.joboffer.failed " + e.getMessage(),null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("publisehr.all.joboffer.failed",null, null));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllAppliedByJobOffer(Long id) {
+        try {
+            return getResponseEntity(jobOfferRepository.findById(id).get().getJobApplications());
+        } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("jobapplicant.all.applicant.failed " + e.getMessage(),null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed",null, null));
+        }
+    }
+
+    private ResponseEntity<?> getResponseEntity(List<JobApplication> jobApplications) {
+        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(jobApplications));
     }
 
 }
