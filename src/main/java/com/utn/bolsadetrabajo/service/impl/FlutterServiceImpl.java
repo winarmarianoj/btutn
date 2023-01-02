@@ -1,17 +1,18 @@
 package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.mapper.FlutterMapper;
-import com.utn.bolsadetrabajo.model.Applicant;
-import com.utn.bolsadetrabajo.model.JobApplication;
-import com.utn.bolsadetrabajo.model.JobOffer;
-import com.utn.bolsadetrabajo.model.User;
+import com.utn.bolsadetrabajo.model.*;
+import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.crud.Readable;
+import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
 import com.utn.bolsadetrabajo.service.interfaces.FlutterService;
+import com.utn.bolsadetrabajo.service.interfaces.PersonService;
+import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
 import com.utn.bolsadetrabajo.util.Errors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,9 @@ public class FlutterServiceImpl implements FlutterService {
     @Autowired private Readable readableService;
     @Autowired private JobOfferRepository jobOfferRepository;
     @Autowired private Errors errors;
+    @Autowired private ApplicantService applicantService;
+    @Autowired private PublisherService publisherService;
+    @Autowired private PersonService personService;
 
     @Override
     public ResponseEntity<?> createJwtByFlutter(AuthenticationRequest authenticationRequest) {
@@ -55,7 +59,15 @@ public class FlutterServiceImpl implements FlutterService {
         }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.responseLoginUserJasonByFlutter(user, jwt));
+        Person person;
+        if(user.getRole().getRole().equals(Roles.APPLICANT)){
+            person = applicantService.getApplicantByUser(user);
+        }else if (user.getRole().getRole().equals(Roles.PUBLISHER)){
+            person = publisherService.getPublisherByUser(user);
+        }else{
+            person = personService.getPersonByUsername(user.getUsername());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.responseLoginUserJasonByFlutter(user, jwt, person));
     }
 
     @Override

@@ -90,7 +90,7 @@ public class ApplicantReportImpl implements ApplicantReport {
 
         CellStyle style1=workbook.createCellStyle();
         XSSFFont font1=workbook.createFont();
-        font.setFontHeight(14);
+        font1.setFontHeight(14);
         style1.setFont(font1);
 
         List<Applicant> applicants = applicantRepository.findAll();

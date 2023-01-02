@@ -4,6 +4,7 @@ import com.utn.bolsadetrabajo.dto.response.ResponseJobApplicationFlutterDto;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferFlutterDto;
 import com.utn.bolsadetrabajo.model.JobApplication;
 import com.utn.bolsadetrabajo.model.JobOffer;
+import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponseByFlutter;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,13 @@ import java.util.List;
 @Component
 public class FlutterMapper {
 
-    public AuthenticationResponseByFlutter responseLoginUserJasonByFlutter(User user, String jwt) {
+    public AuthenticationResponseByFlutter responseLoginUserJasonByFlutter(User user, String jwt, Person person) {
         AuthenticationResponseByFlutter auth = new AuthenticationResponseByFlutter(jwt);
+        auth.setName(person.getOficialName());
+        auth.setLastName(person.getLastName());
+        auth.setPhone(person.getPhoneNumber());
         auth.setUsername(user.getUsername());
+        auth.setPassword(user.getPassword());
         auth.setId(user.getUserId());
         auth.setRole(String.valueOf(user.getRole().getRole()));
         return auth;
