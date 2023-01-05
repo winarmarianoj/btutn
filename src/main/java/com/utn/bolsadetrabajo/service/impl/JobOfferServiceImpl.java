@@ -137,7 +137,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             applicantService.postulateJobOffer(applicant);
             repository.save(jobOffer);
             emailGoogleService.createEmailPostulate(jobOffer, applicant);
-            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("applicant.postulate.success", null, null));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(messageSource.getMessage("applicant.postulate.success", null, null));
         } catch (Exception e) {
             LOGGER.error(messageSource.getMessage("applicant.postulate.failed " + e.getMessage(), new Object[]{postulateDTO.getJobofferID()}, null));
             errors.logError(messageSource.getMessage("applicant.postulate.failed " + e.getMessage(), new Object[]{postulateDTO.getJobofferID()}, null));

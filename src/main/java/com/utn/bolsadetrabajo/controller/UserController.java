@@ -20,9 +20,12 @@ public class UserController implements Messages {
     @ApiOperation(value = "${user.getUserId} - Devuelve un User por su ID", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id){
@@ -32,9 +35,12 @@ public class UserController implements Messages {
     @ApiOperation(value = "${user.allUsers} - Devuelve una lista de todos los User", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @GetMapping("/")
     public ResponseEntity<?> allUsers(@RequestParam(name = "page",defaultValue = "0") int page) {

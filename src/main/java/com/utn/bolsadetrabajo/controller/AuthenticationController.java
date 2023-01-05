@@ -29,9 +29,12 @@ public class AuthenticationController implements Messages {
     @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @PostMapping(value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -41,9 +44,12 @@ public class AuthenticationController implements Messages {
     @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @PostMapping(value = "/loginflutter", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createAuthenticationTokenByFlutter(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -53,9 +59,12 @@ public class AuthenticationController implements Messages {
     @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @PostMapping(value = "/forgot", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> changePassword(@RequestBody @Valid ForgotDTO forgotDTO) throws Exception {
@@ -65,9 +74,12 @@ public class AuthenticationController implements Messages {
     @ApiOperation(value = "${authentication.activateNewUser} - Activa un User nuevo", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @GetMapping("/activate/{username}/{hash}")
     public ResponseEntity<?> activateNewUser(@PathVariable String username, @PathVariable String hash){

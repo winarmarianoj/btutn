@@ -27,7 +27,7 @@ public class FlutterMapper {
         return auth;
     }
 
-    public List<ResponseJobApplicationFlutterDto> toResponseJobApplication(List<JobApplication> jobApplications) {
+    public List<ResponseJobApplicationFlutterDto> toResponseJobApplication(List<JobApplication> jobApplications, String message) {
         List<ResponseJobApplicationFlutterDto> list = new ArrayList<>();
         for(JobApplication job : jobApplications){
             ResponseJobApplicationFlutterDto res = new ResponseJobApplicationFlutterDto();
@@ -57,6 +57,7 @@ public class FlutterMapper {
             res.setJobOfferDeletedDay(String.valueOf(job.getJobOffer().getDeletedDay()));
             res.setJobOfferDeleted(job.getJobOffer().isDeleted());
             res.setState(String.valueOf(job.getJobOffer().getState()));
+            res.setMessage(message);
             list.add(res);
         }
         return list;

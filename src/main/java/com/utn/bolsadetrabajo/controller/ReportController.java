@@ -25,9 +25,12 @@ public class ReportController implements Messages {
     @ApiOperation(value = "${report.exportToExcelApplicant} - Devuelve Archivo Excel de Applicants", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @GetMapping("/applicant-excel")
     public void exportToExcelApplicant(HttpServletResponse response) throws IOException {

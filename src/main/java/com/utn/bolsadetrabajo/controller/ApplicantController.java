@@ -27,9 +27,12 @@ public class ApplicantController implements Messages, Creators<PersonDTO> {
     @ApiOperation(value = "${applicant.update} - Modifica un Applicant", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid PersonDTO applicantDTO) throws PersonException {
@@ -40,10 +43,12 @@ public class ApplicantController implements Messages, Creators<PersonDTO> {
     @ApiOperation(value = "${applicant.create} - Crea un Applicant nuevo", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
-            @ApiResponse(code = 201, message = CREATED_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
-            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE)
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
     @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> create(@RequestBody @Valid PersonDTO applicantDTO) throws PersonException {

@@ -41,4 +41,5 @@ public class ResponseJobApplicationFlutterDto {
     private String jobOfferDeletedDay;
     private boolean jobOfferDeleted;
     private String state;
+    private String message;
 }

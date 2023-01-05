@@ -103,7 +103,8 @@ public class FlutterServiceImpl implements FlutterService {
     }
 
     private ResponseEntity<?> getResponseEntity(List<JobApplication> jobApplications) {
-        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(jobApplications));
+        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(jobApplications,
+                messageSource.getMessage("jobapplicant.all.applicant.success",null, null)));
     }
 
 }
