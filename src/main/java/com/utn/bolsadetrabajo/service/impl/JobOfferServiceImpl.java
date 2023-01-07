@@ -117,7 +117,31 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     public ResponseEntity<?> getAll() {
         try {
+            List<JobOffer> jobOffers = repository.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toJobOfferListSimplePublisher(jobOffers));
+        } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
+            errors.logError(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.all.joboffer.failed",null, null));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllPublished() {
+        try {
             List<JobOffer> jobOffers = repository.findAllByState("PUBLISHED");
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toJobOfferListSimplePublisher(jobOffers));
+        } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
+            errors.logError(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.all.joboffer.failed",null, null));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getJobOfferPending() {
+        try {
+            List<JobOffer> jobOffers = repository.findAllByState("PENDING");
             return ResponseEntity.status(HttpStatus.OK).body(mapper.toJobOfferListSimplePublisher(jobOffers));
         } catch (Exception e) {
             LOGGER.error(messageSource.getMessage("joboffer.all.joboffer.failed " + e.getMessage(),null, null));

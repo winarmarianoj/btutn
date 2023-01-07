@@ -90,7 +90,7 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     }
 
     @Override
-    @ApiOperation(value = "joboffer.getAll - Devuelve la lista de Todos los JobOffer Sin Page.", response = ResponseEntity.class)
+    @ApiOperation(value = "joboffer.getAll - Devuelve la lista de Todos los JobOffer.", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 201, message = CREATED),
@@ -103,6 +103,21 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     @GetMapping("/")
     public ResponseEntity<?> getAll() {
         return jobOfferService.getAll();
+    }
+
+    @ApiOperation(value = "joboffer.getAllPublished - Devuelve la lista de los JobOffer Estado Publicados.", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
+    })
+    @GetMapping("/")
+    public ResponseEntity<?> getAllPublished() {
+        return jobOfferService.getAllPublished();
     }
 
     @ApiOperation(value = "joboffer.applicantPostulate - Un Applicant se postula a un aviso a traves del ID.", response = ResponseEntity.class)
@@ -118,6 +133,21 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
     @PostMapping(value = "/postulate", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> postulate(@RequestBody @Valid PostulateDTO postulateDTO){
         return jobOfferService.postulate(postulateDTO);
+    }
+
+    @ApiOperation(value = "joboffer.getJobOfferPending - Devuelve la lista de Todos los JobOffer con State = Pending.", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = OK_RESPONSE),
+            @ApiResponse(code = 201, message = CREATED),
+            @ApiResponse(code = 202, message = ACCEPTED),
+            @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
+            @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
+            @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
+            @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
+    })
+    @GetMapping("/pending")
+    public ResponseEntity<?> getJobOfferPending() {
+        return jobOfferService.getJobOfferPending();
     }
 
     @ApiOperation(value = "report-lists.getEvaluationAllJobOffers -UTN: Es la respuesta de UTN" +

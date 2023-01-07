@@ -2,10 +2,7 @@ package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.response.ResponseJobApplicationFlutterDto;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferFlutterDto;
-import com.utn.bolsadetrabajo.model.JobApplication;
-import com.utn.bolsadetrabajo.model.JobOffer;
-import com.utn.bolsadetrabajo.model.Person;
-import com.utn.bolsadetrabajo.model.User;
+import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponseByFlutter;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +12,49 @@ import java.util.List;
 @Component
 public class FlutterMapper {
 
-    public AuthenticationResponseByFlutter responseLoginUserJasonByFlutter(User user, String jwt, Person person) {
-        AuthenticationResponseByFlutter auth = new AuthenticationResponseByFlutter(jwt);
-        auth.setName(person.getOficialName());
-        auth.setLastName(person.getLastName());
-        auth.setPhone(person.getPhoneNumber());
-        auth.setUsername(user.getUsername());
-        auth.setPassword(user.getPassword());
-        auth.setId(user.getUserId());
-        auth.setRole(String.valueOf(user.getRole().getRole()));
-        return auth;
+    public AuthenticationResponseByFlutter responseLoginUserJasonByFlutter(User user, String jwt, Person person, Applicant app, Publisher pub) {
+        AuthenticationResponseByFlutter dto = new AuthenticationResponseByFlutter(jwt);
+        if(person != null){
+            dto.setName(person.getOficialName());
+            dto.setLastName(person.getLastName());
+            dto.setIdentification(person.getIdentification());
+            dto.setPhone(person.getPhoneNumber());
+            dto.setUsername(user.getUsername());
+            dto.setPassword(user.getPassword());
+            dto.setId(user.getUserId());
+            dto.setRole(String.valueOf(user.getRole().getRole()));
+            dto.setGenre("");
+            dto.setBirthDate("");
+            dto.setTypeStudent("");
+            dto.setWebPage("");
+        }else if(app != null){
+            dto.setName(app.getOficialName());
+            dto.setLastName(app.getLastName());
+            dto.setIdentification(app.getIdentification());
+            dto.setPhone(app.getPhoneNumber());
+            dto.setUsername(user.getUsername());
+            dto.setPassword(user.getPassword());
+            dto.setId(user.getUserId());
+            dto.setRole(String.valueOf(user.getRole().getRole()));
+            dto.setGenre(app.getGenre().name());
+            dto.setBirthDate(app.getBirthDate().toString());
+            dto.setTypeStudent(app.getTypeStudent().name());
+            dto.setWebPage("");
+        }else if(pub != null){
+            dto.setName(pub.getOficialName());
+            dto.setLastName(pub.getLastName());
+            dto.setIdentification(pub.getIdentification());
+            dto.setPhone(pub.getPhoneNumber());
+            dto.setUsername(user.getUsername());
+            dto.setPassword(user.getPassword());
+            dto.setId(user.getUserId());
+            dto.setRole(String.valueOf(user.getRole().getRole()));
+            dto.setWebPage(pub.getWebPage());
+            dto.setGenre("");
+            dto.setBirthDate("");
+            dto.setTypeStudent("");
+        }
+        return dto;
     }
 
     public List<ResponseJobApplicationFlutterDto> toResponseJobApplication(List<JobApplication> jobApplications, String message) {

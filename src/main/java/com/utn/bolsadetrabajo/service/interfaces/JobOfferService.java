@@ -15,7 +15,12 @@ public interface JobOfferService extends Removable, Writeable<JobOfferDTO> {
 
     ResponseEntity<?> getAll();
 
+    ResponseEntity<?> getAllPublished();
+
+    ResponseEntity<?> getJobOfferPending();
+
     ResponseEntity<?> postulate(PostulateDTO postulateDTO);
 
     ResponseEntity<?> getJobOfferAllEvaluation(JobOfferEvaluationDTO jobOfferEvaluationDTO);
+
 }

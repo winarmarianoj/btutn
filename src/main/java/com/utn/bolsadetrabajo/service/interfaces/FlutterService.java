@@ -1,5 +1,6 @@
 package com.utn.bolsadetrabajo.service.interfaces;
 
+import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import org.springframework.http.ResponseEntity;
 
@@ -12,4 +13,6 @@ public interface FlutterService {
     ResponseEntity<?> getJobOfferAllByPublisher(Long id);
 
     ResponseEntity<?> getAllAppliedByJobOffer(Long id);
+
+    ResponseEntity<?> getJobOfferEvaluation(JobOfferEvaluationFlutterDTO dto);
 }

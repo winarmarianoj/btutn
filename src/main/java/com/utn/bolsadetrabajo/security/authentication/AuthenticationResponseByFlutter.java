@@ -12,10 +12,15 @@ public class AuthenticationResponseByFlutter implements Serializable {
     private Long id;
     private String name;
     private String lastName;
+    private String identification;
     private String phone;
     private String username;
     private String password;
     private String role;
+    private String genre;
+    private String birthDate;
+    private String typeStudent;
+    private String webPage;
 
     public AuthenticationResponseByFlutter(String jwt) {
         this.jwt = jwt;
@@ -79,5 +84,45 @@ public class AuthenticationResponseByFlutter implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIdentification() {
+        return identification;
+    }
+
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getTypeStudent() {
+        return typeStudent;
+    }
+
+    public void setTypeStudent(String typeStudent) {
+        this.typeStudent = typeStudent;
+    }
+
+    public String getWebPage() {
+        return webPage;
+    }
+
+    public void setWebPage(String webPage) {
+        this.webPage = webPage;
     }
 }

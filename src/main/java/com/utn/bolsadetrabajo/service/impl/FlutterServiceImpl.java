@@ -1,12 +1,15 @@
 package com.utn.bolsadetrabajo.service.impl;
 
+import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
 import com.utn.bolsadetrabajo.mapper.FlutterMapper;
+import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
+import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponseByFlutter;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.crud.Readable;
 import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
@@ -44,6 +47,7 @@ public class FlutterServiceImpl implements FlutterService {
     @Autowired private ApplicantService applicantService;
     @Autowired private PublisherService publisherService;
     @Autowired private PersonService personService;
+    @Autowired private JobOfferMapper jobOfferMapper;
 
     @Override
     public ResponseEntity<?> createJwtByFlutter(AuthenticationRequest authenticationRequest) {
@@ -59,15 +63,17 @@ public class FlutterServiceImpl implements FlutterService {
         }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
-        Person person;
+        Person person = null;
+        Applicant app = null;
+        Publisher pub = null;
         if(user.getRole().getRole().equals(Roles.APPLICANT)){
-            person = applicantService.getApplicantByUser(user);
+            app = applicantService.getApplicantByUser(user);
         }else if (user.getRole().getRole().equals(Roles.PUBLISHER)){
-            person = publisherService.getPublisherByUser(user);
+            pub = publisherService.getPublisherByUser(user);
         }else{
             person = personService.getPersonByUsername(user.getUsername());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.responseLoginUserJasonByFlutter(user, jwt, person));
+        return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.responseLoginUserJasonByFlutter(user, jwt, person, app, pub));
     }
 
     @Override
@@ -101,10 +107,34 @@ public class FlutterServiceImpl implements FlutterService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed",null, null));
         }
     }
+    @Override
+    public ResponseEntity<?> getJobOfferEvaluation(JobOfferEvaluationFlutterDTO dto){
+        return null;
+    }
+
+    /*@Override
+    public ResponseEntity<?> getJobOfferEvaluation(JobOfferEvaluationFlutterDTO dto) {
+        try {
+            JobOffer jobOffer = jobOfferRepository.findById(Long.valueOf(dto.getId())).get();
+            JobOffer jobOfferModify = flutterMapper.modifyJobOffer(jobOffer, dto);
+            if(jobOfferModify.getState().equals(State.REVIEW)) emailGoogleService.sendEmailPublisherJobOfferReview(jobOfferModify);
+
+            JobOffer aux = repository.save(jobOfferModify);
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.evaluation.success", null, null)));
+        } catch (Exception e) {
+            LOGGER.error(messageSource.getMessage("joboffer.evaluation.failed " + e.getMessage(), new Object[]{jobOfferEvaluationDTO.getId()}, null));
+            errors.logError(messageSource.getMessage("joboffer.evaluation.failed " + e.getMessage(), new Object[]{jobOfferEvaluationDTO.getId()}, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.evaluation.failed", new Object[]{jobOfferEvaluationDTO.getId()}, null));
+        }
+    }
+
+     */
 
     private ResponseEntity<?> getResponseEntity(List<JobApplication> jobApplications) {
         return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(jobApplications,
                 messageSource.getMessage("jobapplicant.all.applicant.success",null, null)));
     }
+
+
 
 }
