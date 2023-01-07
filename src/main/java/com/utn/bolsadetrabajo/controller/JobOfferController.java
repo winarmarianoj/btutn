@@ -115,7 +115,7 @@ public class JobOfferController implements Controllers<JobOfferDTO>, Messages {
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),
             @ApiResponse(code = 406, message = NOT_ACCEPTABLE)
     })
-    @GetMapping("/")
+    @GetMapping("/published-all")
     public ResponseEntity<?> getAllPublished() {
         return jobOfferService.getAllPublished();
     }
