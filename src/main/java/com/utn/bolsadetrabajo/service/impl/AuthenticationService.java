@@ -5,7 +5,6 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
-import com.utn.bolsadetrabajo.security.authentication.AuthenticationResponse;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.util.Errors;
 import org.slf4j.Logger;
@@ -34,9 +33,8 @@ public class AuthenticationService implements com.utn.bolsadetrabajo.service.int
 
     @Override
     public ResponseEntity<?> createJwt(AuthenticationRequest authenticationRequest) throws Exception {
-        User user;
+        User user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
         try {
-            user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
             if (user.getState().equals(State.ACTIVE)){
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             }

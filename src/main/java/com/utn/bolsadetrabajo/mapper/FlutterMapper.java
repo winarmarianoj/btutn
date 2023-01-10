@@ -1,26 +1,17 @@
 package com.utn.bolsadetrabajo.mapper;
 
-import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobApplicationFlutterDto;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferFlutterDto;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.dto.response.UserByFlutterDTO;
 import com.utn.bolsadetrabajo.model.*;
-import org.dozer.DozerBeanMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class FlutterMapper {
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
 
     public UserByFlutterDTO responseLoginUserJasonByFlutter(User user, String jwt, Person person, Applicant app, Publisher pub) {
         UserByFlutterDTO dto = new UserByFlutterDTO(jwt);
@@ -135,10 +126,6 @@ public class FlutterMapper {
         return dto;
     }
 
-    public UserByFlutterDTO toResponseUpdateUser(ResponsePersonDto body, String message) {
-        return dozerBeanMapper.map(body, UserByFlutterDTO.class);
-    }
-
     public UserByFlutterDTO toResponseCreateUserByFlutterDTO(ResponsePersonDto body) {
         UserByFlutterDTO dto = new UserByFlutterDTO("");
         dto.setId(body.getId());
@@ -157,20 +144,4 @@ public class FlutterMapper {
         return dto;
     }
 
-    public PersonDTO toPersonDtoByUserByFlutterDto(UserByFlutterDTO user) {
-        PersonDTO dto = PersonDTO.builder()
-                .name(user.getName())
-                .surname(user.getLastName())
-                .identification(user.getIdentification())
-                .phoneNumber(user.getPhone())
-                .email(user.getUsername())
-                .password(user.getPassword())
-                .role(user.getRole())
-                .genre(user.getGenre())
-                .birthDate(user.getBirthDate() != null ? LocalDate.parse(user.getBirthDate()) : null)
-                .typeStudent(user.getTypeStudent() != null ? user.getTypeStudent() : "")
-                .webPage(user.getWebPage() != null ? user.getWebPage() : "")
-                .build();
-        return dto;
-    }
 }

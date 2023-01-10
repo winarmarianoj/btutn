@@ -8,7 +8,6 @@ import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.model.Publisher;
 import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
-import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.PublisherRepository;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.interfaces.PublisherService;
@@ -28,7 +27,6 @@ public class PublisherServiceImpl implements PublisherService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PublisherServiceImpl.class);
 
     @Autowired private PublisherRepository repository;
-    @Autowired private ParametersRepository parametersRepository;
     @Autowired private EmailGoogleService emailGoogleService;
     @Autowired private PublisherMapper publisherMapper;
     @Autowired private PersonMapper personMapper;

@@ -1,14 +1,9 @@
 package com.utn.bolsadetrabajo.dto.response;
 
-import com.utn.bolsadetrabajo.model.enums.State;
-import com.utn.bolsadetrabajo.model.enums.TypeModality;
-import com.utn.bolsadetrabajo.model.enums.TypePosition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @RequiredArgsConstructor

@@ -10,8 +10,6 @@ import com.utn.bolsadetrabajo.model.User;
 import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.ParametersRepository;
 import com.utn.bolsadetrabajo.repository.UserRepository;
-import com.utn.bolsadetrabajo.security.filter.JwtRequestFilter;
-import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.interfaces.UserService;
 import com.utn.bolsadetrabajo.util.Errors;
 import com.utn.bolsadetrabajo.validation.Validator;
@@ -44,8 +42,6 @@ public class UserServiceImpl implements UserService {
     @Autowired private ParametersRepository parametersRepository;
     @Autowired private UserMapper userMapper;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired private JwtRequestFilter jwtRequestFilter;
-    @Autowired private JwtUtilService jwtUtilService;
     @Autowired private MessageSource messageSource;
     @Autowired private Validator validator;
     @Autowired private Errors errors;

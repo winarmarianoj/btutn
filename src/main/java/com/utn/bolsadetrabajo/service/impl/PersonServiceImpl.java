@@ -8,7 +8,6 @@ import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.repository.PersonRepository;
 import com.utn.bolsadetrabajo.service.interfaces.*;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
-import com.utn.bolsadetrabajo.service.reports.GenerateListTypePerson;
 import com.utn.bolsadetrabajo.util.Errors;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ public class PersonServiceImpl implements PersonService {
     @Autowired private MessageSource messageSource;
     @Autowired private UserService userService;
     @Autowired private Validator validator;
-    @Autowired private GenerateListTypePerson generateListTypePerson;
     @Autowired private PublisherService publisherService;
     @Autowired private ApplicantService applicantService;
     @Autowired private Errors errors;

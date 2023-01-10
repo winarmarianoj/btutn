@@ -1,16 +1,12 @@
 package com.utn.bolsadetrabajo.controller;
 
-import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
-import com.utn.bolsadetrabajo.dto.response.UserByFlutterDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.service.interfaces.FlutterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,12 +56,6 @@ public class FlutterController {
     @PostMapping("/evaluation")
     public ResponseEntity<?> getJobOfferEvaluation(@RequestBody @Valid JobOfferEvaluationFlutterDTO dto){
         return flutterService.getJobOfferEvaluation(dto);
-    }
-
-    @ApiOperation(value = "${flutter.update} - Modifica o crea una persona", response = ResponseEntity.class)
-    @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserByFlutterDTO userByFlutterDTO) throws PersonException {
-        return flutterService.update(id, userByFlutterDTO);
     }
 
     @ApiOperation(value = "${flutter.create} - Crea una Persona nueva", response = ResponseEntity.class)

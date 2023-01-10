@@ -4,7 +4,6 @@ import com.utn.bolsadetrabajo.controller.interfaces.Creators;
 import com.utn.bolsadetrabajo.controller.interfaces.Messages;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
-import com.utn.bolsadetrabajo.model.Person;
 import com.utn.bolsadetrabajo.service.interfaces.ApplicantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

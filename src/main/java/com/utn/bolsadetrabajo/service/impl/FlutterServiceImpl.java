@@ -3,13 +3,9 @@ package com.utn.bolsadetrabajo.service.impl;
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
-import com.utn.bolsadetrabajo.dto.response.UserByFlutterDTO;
-import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.mapper.FlutterMapper;
-import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
-import com.utn.bolsadetrabajo.model.enums.State;
 import com.utn.bolsadetrabajo.repository.JobOfferRepository;
 import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
@@ -17,22 +13,16 @@ import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.crud.Readable;
 import com.utn.bolsadetrabajo.service.interfaces.*;
 import com.utn.bolsadetrabajo.util.Errors;
-import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +30,6 @@ import java.util.Objects;
 public class FlutterServiceImpl implements FlutterService, Urls {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
-    @Autowired private AuthenticationManager authenticationManager;
     @Autowired private JwtUtilService jwtTokenUtil;
     @Autowired private UserDetailsServiceImpl userDetailsService;
     @Autowired private MessageSource messageSource;
@@ -52,7 +41,6 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     @Autowired private ApplicantService applicantService;
     @Autowired private PublisherService publisherService;
     @Autowired private PersonService personService;
-    @Autowired private JobOfferMapper jobOfferMapper;
     @Autowired private RestTemplate restTemplate;
 
     @Override
@@ -61,11 +49,7 @@ public class FlutterServiceImpl implements FlutterService, Urls {
         try {
             user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
             LOGGER.info(user.getUsername() + user.getPassword() + user.getState());
-            if (user.getState().equals(State.ACTIVE) && !user.isConected()){
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-            }
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-        }catch (BadCredentialsException e) {
+        }catch (Exception e) {
             LOGGER.error("Incorrecto usuario y/o contraseña - {0}. Asegurese que su cuente este Activa." + e.getMessage());
             errors.logError("Incorrecto usuario y/o contraseña - {0}. Asegurese que su cuente este Activa." + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("authentication.create.jwt.failed", new Object[] {authenticationRequest.getUsername()}, null));
@@ -136,24 +120,6 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     }
 
     @Override
-    public ResponseEntity<?> update(Long id, UserByFlutterDTO userByFlutterDTO) throws PersonException {
-        try {
-            PersonDTO personDTO = flutterMapper.toPersonDtoByUserByFlutterDto(userByFlutterDTO);
-            if (personDTO.getRole().equals(Roles.APPLICANT.name())) {
-                restTemplate.put(URL_APPLICANT_CREATE_AND_UPDATE + id, personDTO, ResponsePersonDto.class);
-            } else {
-                restTemplate.put(URL_PUBLISHER_CREATE_AND_UPDATE + id, personDTO, ResponsePersonDto.class);
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.update.success", null,null));
-        }catch (Exception e){
-            LOGGER.error(messageSource.getMessage("applicant.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
-            errors.logError(messageSource.getMessage("applicant.update.failed " + e.getMessage(),new Object[] {e.getMessage()}, null));
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
-                    .body(messageSource.getMessage("person.update.failed",null, null));
-        }
-    }
-
-    @Override
     public ResponseEntity<?> create(PersonDTO personDTO) {
         ResponseEntity<?> newEntity = personDTO.getRole().equals(Roles.APPLICANT.name()) ?
                 restTemplate.postForEntity(URL_APPLICANT_CREATE_AND_UPDATE, personDTO, ResponsePersonDto.class)
@@ -171,7 +137,5 @@ public class FlutterServiceImpl implements FlutterService, Urls {
         return ResponseEntity.status(HttpStatus.OK).body(flutterMapper.toResponseJobApplication(jobApplications,
                 messageSource.getMessage("jobapplicant.all.applicant.success",null, null)));
     }
-
-
 
 }

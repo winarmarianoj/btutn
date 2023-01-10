@@ -14,7 +14,6 @@ import com.utn.bolsadetrabajo.service.interfaces.*;
 import com.utn.bolsadetrabajo.service.emails.EmailGoogleService;
 import com.utn.bolsadetrabajo.service.reports.ReportLists;
 import com.utn.bolsadetrabajo.util.Errors;
-import com.utn.bolsadetrabajo.util.UserConnectedService;
 import com.utn.bolsadetrabajo.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,6 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Autowired private EmailGoogleService emailGoogleService;
     @Autowired private PublisherService publisherService;
     @Autowired private ApplicantService applicantService;
-    @Autowired private UserConnectedService userConnectedService;
-    @Autowired private PersonService personService;
     @Autowired private ReportLists reportLists;
     @Autowired private Validator validJobOffer;
     @Autowired private Readable readableService;
