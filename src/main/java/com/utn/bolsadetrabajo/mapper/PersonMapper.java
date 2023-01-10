@@ -94,7 +94,6 @@ public class PersonMapper {
 
     public Person deletePerson(Person person) {
         person.setDeleted(true);
-        person.getUser().setUsername(ELIMINATED);
         person.getUser().setState(State.DELETED);
         return person;
     }

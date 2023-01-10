@@ -56,7 +56,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
-            repository.save(mapper.deletePerson(getPerson(id)));
+            Person person = getPerson(id);
+            LOGGER.info("la persona id es " + person.getId());
+            person = mapper.deletePerson(person);
+            repository.save(person);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("person.deleted.success", null,null));
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("person.deleted.failed " + e.getMessage(), new Object[] {id}, null));

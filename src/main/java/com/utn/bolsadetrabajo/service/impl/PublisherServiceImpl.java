@@ -44,6 +44,7 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public ResponseEntity<?> delete(Long id) {
         try{
+            LOGGER.info("el id que recibo es " + id);
             Publisher publisher = getPublisher(id);
             publisher.setDeleted(true);
             publisher.getUser().setState(State.DELETED);

@@ -57,9 +57,10 @@ public class FlutterServiceImpl implements FlutterService, Urls {
 
     @Override
     public ResponseEntity<?> createJwtByFlutter(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
-        LOGGER.info(user.getUsername() + user.getPassword() + user.getState());
+        User user;
         try {
+            user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
+            LOGGER.info(user.getUsername() + user.getPassword() + user.getState());
             if (user.getState().equals(State.ACTIVE) && !user.isConected()){
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             }
