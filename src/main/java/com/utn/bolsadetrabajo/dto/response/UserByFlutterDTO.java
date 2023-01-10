@@ -1,13 +1,8 @@
-package com.utn.bolsadetrabajo.security.authentication;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+package com.utn.bolsadetrabajo.dto.response;
 
 import java.io.Serializable;
 
-public class AuthenticationResponseByFlutter implements Serializable {
+public class UserByFlutterDTO implements Serializable {
     private final String jwt;
     private Long id;
     private String name;
@@ -21,8 +16,17 @@ public class AuthenticationResponseByFlutter implements Serializable {
     private String birthDate;
     private String typeStudent;
     private String webPage;
+    private boolean conected;
 
-    public AuthenticationResponseByFlutter(String jwt) {
+    public boolean isConected() {
+        return conected;
+    }
+
+    public void setConected(boolean conected) {
+        this.conected = conected;
+    }
+
+    public UserByFlutterDTO(String jwt) {
         this.jwt = jwt;
     }
 

@@ -40,10 +40,8 @@ public class AuthenticationService implements com.utn.bolsadetrabajo.service.int
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             }
         }catch (BadCredentialsException e) {
-            LOGGER.error(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(), new Object[] {e}, null));
-            errors.logError(messageSource.getMessage("authentication.create.jwt.failed " + e.getMessage(), new Object[] {e}, null));
-            //throw new BadCredentialsException(messageSource.getMessage("authentication.create.jwt.failed", new Object[] {e}, null));
-
+            LOGGER.error("Incorrecto usuario y/o contraseña - {0}. Asegurese que su cuente este Activa." + e.getMessage());
+            errors.logError("Incorrecto usuario y/o contraseña - {0}. Asegurese que su cuente este Activa." + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("authentication.create.jwt.failed", new Object[] {authenticationRequest.getUsername()}, null));
         }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 

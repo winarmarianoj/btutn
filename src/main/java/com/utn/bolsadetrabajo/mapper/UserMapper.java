@@ -27,6 +27,7 @@ public class UserMapper {
                 .role(role)
                 .state(State.REVIEW)
                 .verificationCode(String.valueOf(pass))
+                .conected(true)
                 .build();
         return user;
     }
@@ -37,6 +38,7 @@ public class UserMapper {
                 .username(user.getUsername())
                 .role(user.getRole().getRole().toString())
                 .message(message)
+                .conected(user.isConected())
                 .build();
         return us;
     }

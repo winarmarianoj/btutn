@@ -8,4 +8,5 @@ public interface Messages {
     String FORBIDDEN_RESPONSE = "No tiene los permisos necesarios para realizar esta operacion.";
     String NOT_FOUND_RESPONSE = "El recurso buscado no existe o no se encuentra disponible.";
     String NOT_ACCEPTABLE = "Desaprobada tu petición, no se acepta.";
+    String NOT_MODIFIED = "El objeto enviado no ha podido ser modificado";
 }

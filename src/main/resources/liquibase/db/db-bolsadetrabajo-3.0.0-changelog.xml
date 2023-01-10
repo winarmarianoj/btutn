@@ -18,6 +18,7 @@
             <column name="username" type="VARCHAR(255)"/>
             <column name="password" type="VARCHAR(255)"/>
             <column name="verification_code" type="VARCHAR(255)"/>
+            <column name="conected" type="BOOLEAN"/>
             <column name="state" type="VARCHAR(255)"/>
             <column name="role_id" type="BIGINT"/>
         </createTable>

@@ -27,6 +27,7 @@ public class ReportController implements Messages {
             @ApiResponse(code = 200, message = OK_RESPONSE),
             @ApiResponse(code = 201, message = CREATED),
             @ApiResponse(code = 202, message = ACCEPTED),
+            @ApiResponse(code = 304, message = NOT_MODIFIED),
             @ApiResponse(code = 401, message = UNAUTHORIZED_RESPONSE),
             @ApiResponse(code = 403, message = FORBIDDEN_RESPONSE),
             @ApiResponse(code = 404, message = NOT_FOUND_RESPONSE),

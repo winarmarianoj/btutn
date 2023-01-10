@@ -61,7 +61,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         }catch (Exception e){
             LOGGER.error(messageSource.getMessage("applicant.deleted.failed " + e.getMessage(), new Object[] {id}, null));
             errors.logError(messageSource.getMessage("applicant.deleted.failed " + e.getMessage(), new Object[] {id}, null));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("applicant.deleted.failed", new Object[] {id}, null));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(messageSource.getMessage("applicant.deleted.failed", new Object[] {id}, null));
         }
     }
 

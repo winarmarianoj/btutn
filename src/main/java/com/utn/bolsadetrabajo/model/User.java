@@ -33,6 +33,10 @@ public class User {
     @Column
     private String verificationCode;
 
+    @NotNull(message = "Campo conectado es obligatorio")
+    @Column
+    private boolean conected;
+
     @Enumerated(value = EnumType.STRING)
     @Column
     private State state;
