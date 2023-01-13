@@ -54,8 +54,20 @@ public class ApplicantMapper {
         app.setIdentification(dto.getIdentification());
         app.setPhoneNumber(dto.getPhoneNumber());
         app.setBirthDate(dto.getBirthDate());
-        app.setGenre(Genre.valueOf(dto.getGenre()));
-        app.setTypeStudent(TypeStudent.valueOf(dto.getTypeStudent()));
+        if(dto.getGenre().equals("FEMENINO")){
+            app.setGenre(Genre.FEMALE);
+        }else if (dto.getGenre().equals("MASCULINO")){
+            app.setGenre(Genre.MALE);
+        }else if (dto.getGenre().equals("OTRO")){
+            app.setGenre(Genre.OTHER);
+        }
+        if(dto.getTypeStudent().equals("ACTIVO")){
+            app.setTypeStudent(TypeStudent.ACTIVE);
+        }else if (dto.getTypeStudent().equals("REGULAR")){
+            app.setTypeStudent(TypeStudent.REGULAR);
+        }else if (dto.getTypeStudent().equals("RECIBIDO")){
+            app.setTypeStudent(TypeStudent.RECEIVED);
+        }
         app.setDeleted(false);
     }
 

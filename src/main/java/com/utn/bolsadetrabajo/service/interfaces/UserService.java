@@ -24,4 +24,8 @@ public interface UserService {
     User update(Person pub, String email, String password);
 
     ResponseEntity<?> forgot(ForgotDTO forgotDTO);
+
+    User findByUsernameByStateActive(String username);
+
+    User save(User user);
 }

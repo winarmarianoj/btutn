@@ -2,6 +2,7 @@ package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferFlutterDTO;
 import com.utn.bolsadetrabajo.dto.request.PostulateDTO;
 import com.utn.bolsadetrabajo.exception.JobOfferException;
 import com.utn.bolsadetrabajo.mapper.JobOfferMapper;
@@ -181,9 +182,24 @@ public class JobOfferServiceImpl implements JobOfferService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("joboffer.evaluation.failed", new Object[]{jobOfferEvaluationDTO.getId()}, null));
         }
     }
-
-    private JobOffer getJobOffer(Long id) {
+    @Override
+    public JobOffer getJobOffer(Long id) {
         return repository.findById(id).get();
+    }
+
+    @Override
+    public JobOffer updateJobOffer(JobOffer jobOffer, JobOfferFlutterDTO jobOfferFlutterDTO) {
+        return mapper.updateJobOfferByFlutter(jobOffer,jobOfferFlutterDTO);
+    }
+
+    @Override
+    public JobOffer saveJobOffer(JobOffer newJobOffer) {
+        return repository.save(newJobOffer);
+    }
+
+    @Override
+    public ResponseEntity<?> toResponsePublisherJobOffer(JobOffer aux, String message) {
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponsePublisherJobOffer(aux, message));
     }
 
     private JobApplication saveJobApplication (Applicant applicant, JobOffer jobOffer){

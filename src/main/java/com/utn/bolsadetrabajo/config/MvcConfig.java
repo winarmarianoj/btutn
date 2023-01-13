@@ -1,6 +1,5 @@
 package com.utn.bolsadetrabajo.config;
 
-import org.dozer.DozerBeanMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +19,6 @@ public class MvcConfig implements WebMvcConfigurer {
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
-
-    /*@Bean
-    public DozerBeanMapper getDozerBeanMapper(){
-        return new DozerBeanMapper();
-    }*/
 
     @Bean
     public RestTemplate restTemplate(){

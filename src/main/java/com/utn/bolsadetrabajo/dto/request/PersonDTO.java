@@ -48,20 +48,11 @@ public class PersonDTO {
     @Size(min = 8, max = 20, message = "Invalid phone number")
     private String phoneNumber;
 
-    //@NotNull(message = "Su Rol no puede estar vacìo")
     private String role;
-
-    //@NotNull(message = "Gènero no puede estar vacìo")
     private String genre;
-
-    //@NotNull(message = "Fecha de Cumpleaños no puede estar vacìo")
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private LocalDate birthDate;
-
-    //@NotNull(message = "Tipo de Estudiante no puede estar vacìo")
     private String typeStudent;
-
-    //@NotNull(message = "URL no puede estar vacìo.")
     @URL()
     private String webPage;
 }

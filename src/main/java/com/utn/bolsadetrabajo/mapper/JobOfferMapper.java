@@ -2,6 +2,7 @@ package com.utn.bolsadetrabajo.mapper;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferDTO;
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferFlutterDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponseJobOfferDto;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.State;
@@ -141,4 +142,18 @@ public class JobOfferMapper {
         return list;
     }
 
+    public JobOffer updateJobOfferByFlutter(JobOffer jobOffer, JobOfferFlutterDTO dto) {
+        Category category = categoryRepository.findByName(dto.getCategory());
+
+        jobOffer.setTitle(dto.getTitle());
+        jobOffer.setDescription(dto.getDescription());
+        jobOffer.setBody(dto.getBody());
+        jobOffer.setArea(dto.getArea());
+        jobOffer.setModifiedDay(LocalDate.now());
+        jobOffer.setExperience(dto.getExperience());
+        jobOffer.setModality(dto.getModality());
+        jobOffer.setPosition(dto.getPosition());
+        jobOffer.setCategory(category);
+        return jobOffer;
+    }
 }

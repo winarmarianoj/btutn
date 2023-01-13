@@ -135,6 +135,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User findByUsernameByStateActive(String username) {
+        return repository.findByUsernameByStateActive(username);
+    }
+
+    @Override
+    public User save(User user) {
+        return repository.save(user);
+    }
+
     private User updateUser(User user, String email, String password){
         return userMapper.update(user, email, password);
     }

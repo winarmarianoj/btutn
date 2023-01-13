@@ -16,10 +16,10 @@ public class CategoryDTO {
     private Long id;
 
     @NotNull(message = "Nombre no puede estar vacìo.")
-    @Size(min = 4, max = 64, message = "El Nombre debe tener un tamaño entre 4 a 64 caracteres.")
+    @Size(min = 2, max = 64, message = "El Nombre debe tener un tamaño entre 4 a 64 caracteres.")
     private String name;
 
     @NotNull(message = "Apellido no puede estar vacìo")
-    @Size(min = 4, max = 100, message = "El Apellido debe tener un tamaño entre 4 a 64 caracteres.")
+    @Size(min = 2, max = 100, message = "El Apellido debe tener un tamaño entre 4 a 64 caracteres.")
     private String description;
 }

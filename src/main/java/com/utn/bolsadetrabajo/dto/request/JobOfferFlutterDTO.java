@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -14,9 +13,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JobOfferDTO {
+public class JobOfferFlutterDTO {
 
-    private Long id;
+    private String id;
 
     @NotNull(message = "Tìtulo no puede estar vacìo.")
     @Size(min = 4, max = 64, message = "El Tìtulo debe tener un tamaño entre 4 a 64 caracteres.")
@@ -47,9 +46,4 @@ public class JobOfferDTO {
     @NotNull(message = "El campo Categoria es obligatorio.")
     @Size(min = 2, max = 30, message = "La Categoria debe tener un tamaño entre 4 a 30 caracteres.")
     private String category;
-
-    private LocalDate createDay;
-    private LocalDate modifiedDay;
-    private LocalDate deletedDay;
-    private boolean deleted;
 }

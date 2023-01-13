@@ -1,6 +1,7 @@
 package com.utn.bolsadetrabajo.controller;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferFlutterDTO;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.exception.PersonException;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
@@ -21,15 +22,15 @@ public class FlutterController {
 
     @Autowired FlutterService flutterService;
 
-    @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
+    @ApiOperation(value = "${flutter.createAuthenticationTokenByFlutter} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
     @PostMapping(value = "/login-flutter", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createAuthenticationTokenByFlutter(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         return flutterService.createJwtByFlutter(authenticationRequest);
     }
 
-    @ApiOperation(value = "${authentication.createAuthenticationToken} - Devuelve JWT y Datos del User", response = ResponseEntity.class)
+    @ApiOperation(value = "${flutter.logoutUserFlutter} - Desloguea al usuario.", response = ResponseEntity.class)
     @PostMapping(value = "/logout-flutter", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> logoutUserFlutter(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> logoutUserFlutter(@RequestBody AuthenticationRequest authenticationRequest) {
         return flutterService.logoutUserFlutter(authenticationRequest);
     }
 
@@ -68,6 +69,12 @@ public class FlutterController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id){
         return flutterService.getById(id);
+    }
+
+    @ApiOperation(value = "flutter.update - Modifica un JobOffer desde App Flutter", response = ResponseEntity.class)
+    @PutMapping(value = "/joboffer", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> updateJobOffer(@RequestBody @Valid JobOfferFlutterDTO jobOfferFlutterDTO){
+        return flutterService.updateJobOffer(jobOfferFlutterDTO);
     }
 
 }

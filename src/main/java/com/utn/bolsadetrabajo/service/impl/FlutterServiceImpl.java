@@ -1,13 +1,12 @@
 package com.utn.bolsadetrabajo.service.impl;
 
 import com.utn.bolsadetrabajo.dto.request.JobOfferEvaluationFlutterDTO;
+import com.utn.bolsadetrabajo.dto.request.JobOfferFlutterDTO;
 import com.utn.bolsadetrabajo.dto.request.PersonDTO;
 import com.utn.bolsadetrabajo.dto.response.ResponsePersonDto;
 import com.utn.bolsadetrabajo.mapper.FlutterMapper;
 import com.utn.bolsadetrabajo.model.*;
 import com.utn.bolsadetrabajo.model.enums.Roles;
-import com.utn.bolsadetrabajo.repository.JobOfferRepository;
-import com.utn.bolsadetrabajo.repository.UserRepository;
 import com.utn.bolsadetrabajo.security.authentication.AuthenticationRequest;
 import com.utn.bolsadetrabajo.security.utilSecurity.JwtUtilService;
 import com.utn.bolsadetrabajo.service.crud.Readable;
@@ -33,21 +32,21 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     @Autowired private JwtUtilService jwtTokenUtil;
     @Autowired private UserDetailsServiceImpl userDetailsService;
     @Autowired private MessageSource messageSource;
-    @Autowired private UserRepository userRepository;
     @Autowired private FlutterMapper flutterMapper;
     @Autowired private Readable readableService;
-    @Autowired private JobOfferRepository jobOfferRepository;
     @Autowired private Errors errors;
     @Autowired private ApplicantService applicantService;
     @Autowired private PublisherService publisherService;
     @Autowired private PersonService personService;
+    @Autowired private JobOfferService jobOfferService;
+    @Autowired private UserService userService;
     @Autowired private RestTemplate restTemplate;
 
     @Override
     public ResponseEntity<?> createJwtByFlutter(AuthenticationRequest authenticationRequest) {
         User user;
         try {
-            user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
+            user = userService.findByUsernameByStateActive(authenticationRequest.getUsername());
             LOGGER.info(user.getUsername() + user.getPassword() + user.getState());
         }catch (Exception e) {
             LOGGER.error("Incorrecto usuario y/o contraseña - {0}. Asegurese que su cuente este Activa." + e.getMessage());
@@ -56,7 +55,7 @@ public class FlutterServiceImpl implements FlutterService, Urls {
         }final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         user.setConected(true);
-        User userChanged = userRepository.save(user);
+        User userChanged = userService.save(user);
         String jwt = jwtTokenUtil.generateToken(userDetails);
         Person person = null;
         Applicant app = null;
@@ -74,7 +73,7 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     @Override
     public ResponseEntity<?> logoutUserFlutter(AuthenticationRequest authenticationRequest) {
         try {
-            User user = userRepository.findByUsernameByStateActive(authenticationRequest.getUsername());
+            User user = userService.findByUsernameByStateActive(authenticationRequest.getUsername());
             user.setConected(false);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("user.conected",null, null));
         }catch (Exception e){
@@ -108,7 +107,8 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     @Override
     public ResponseEntity<?> getAllAppliedByJobOffer(Long id) {
         try {
-            return getResponseEntity(jobOfferRepository.findById(id).get().getJobApplications());
+            JobOffer jobOffer = jobOfferService.getJobOffer(id);
+            return getResponseEntity(jobOffer.getJobApplications());
         } catch (Exception e) {
             LOGGER.error(messageSource.getMessage("jobapplicant.all.applicant.failed " + e.getMessage(),null, null));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("jobapplicant.all.applicant.failed",null, null));
@@ -131,6 +131,21 @@ public class FlutterServiceImpl implements FlutterService, Urls {
     public ResponseEntity<?> getById(Long id) {
         ResponseEntity<?> newEntity = restTemplate.getForEntity(URL_PERSON_CREATE_AND_UPDATE + id, ResponsePersonDto.class);
         return ResponseEntity.status(newEntity.getStatusCode()).body(flutterMapper.toResponseCreateUserByFlutterDTO((ResponsePersonDto) Objects.requireNonNull(newEntity.getBody())));
+    }
+
+    @Override
+    public ResponseEntity<?> updateJobOffer(JobOfferFlutterDTO jobOfferFlutterDTO) {
+        try {
+            JobOffer jobOffer =  jobOfferService.getJobOffer(Long.valueOf(jobOfferFlutterDTO.getId()));
+            JobOffer newJobOffer = jobOfferService.updateJobOffer(jobOffer, jobOfferFlutterDTO);
+            JobOffer aux = jobOfferService.saveJobOffer(newJobOffer);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(jobOfferService.toResponsePublisherJobOffer(aux, messageSource.getMessage("joboffer.update.success", null, null)));
+        } catch (Exception e) {
+            LOGGER.error("No se ha podido modificar el aviso con id " + jobOfferFlutterDTO.getId());
+            errors.logError("No se ha podido modificar el aviso con id " + jobOfferFlutterDTO.getId());
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(messageSource.getMessage("joboffer.update.failed",new Object[] {e.getMessage()}, null));
+        }
     }
 
     private ResponseEntity<?> getResponseEntity(List<JobApplication> jobApplications) {
